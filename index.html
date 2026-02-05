@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+    <meta name="theme-color" content="#0f0202">
+    <title>Editor La Alhambra - V15 (Promos con Fotos)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg: #0a0a0a; --sidebar: #120202; --text: #ffffff; --text-light: #9ca3af;  
+            --card-bg: #1c1917; --input-bg: #292524; --border-color: #44403c;
+            --primary: #ea580c; --accent: #facc15; --danger: #dc2626; --success: #16a34a; --fab-bg: #171717;      
+            --github-blue: #2563EB; --github-bg: #172554;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; margin: 0; overflow: hidden; font-size: 14px; }
+        body.no-scroll { overflow: hidden !important; } /* Bloqueo de scroll */
+
+        /* LOGIN */
+        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; padding-bottom: 20vh; background-image: radial-gradient(circle at center, #450a0a 0%, #000 70%); }
+        .login-box { width: 85%; max-width: 280px; text-align: center; }
+        .login-avatar { width: 80px; height: 80px; background: var(--primary); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; box-shadow: 0 0 25px rgba(234, 88, 12, 0.6); border: 2px solid var(--accent); }
+        .login-input { background: #222 !important; border: 1px solid #444; color: white !important; padding: 12px; border-radius: 10px; width: 100%; font-size: 1.2rem; text-align: center; letter-spacing: 5px; outline: none; margin-bottom: 15px; }
+        .btn-login { background: linear-gradient(to right, var(--primary), #b91c1c); color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); }
+
+        /* HEADER */
+        .mobile-header { background: var(--sidebar); padding: 10px 0; border-bottom: 1px solid var(--primary); display: flex; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 100; flex-shrink: 0; }
+        .nav-scroller { display: flex; overflow-x: auto; gap: 8px; padding: 0 15px; scrollbar-width: none; flex: 1; }
+        .nav-pill { white-space: nowrap; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; color: var(--text-light); background: rgba(255,255,255,0.05); transition: 0.2s; border: 1px solid transparent; cursor: pointer; }
+        .nav-pill.active { background: var(--primary); color: white; font-weight: 700; border-color: var(--accent); box-shadow: 0 0 10px rgba(234, 88, 12, 0.4); }
+
+        /* MAIN */
+        main { flex: 1; padding: 15px; overflow-y: auto; scroll-behavior: smooth; position: relative; padding-bottom: 120px; }
+        .panel { display: none; animation: fadeIn 0.3s ease; width: 100%; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* UI ELEMENTS */
+        .card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px; position: relative; }
+        h1 { margin: 0 0 15px 0; font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; text-transform: uppercase; }
+        h3 { margin: 0 0 10px 0; color: var(--accent); font-size: 1rem; text-transform: uppercase; }
+        label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; }
+        input, textarea, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.95rem; background: var(--input-bg); color: white; outline: none; font-family: inherit; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(234, 88, 12, 0.2); }
+
+        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; margin-bottom: 10px; }
+        .btn-success { background: var(--success); color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-light); width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; }
+
+        /* TOAST NOTIFICATION */
+        #toast { visibility: hidden; min-width: 250px; background-color: #111; border: 1px solid var(--accent); color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; z-index: 5000; left: 50%; bottom: 90px; transform: translateX(-50%); font-size: 0.9rem; box-shadow: 0 5px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, bottom 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 100px; }
+
+        /* ALERTAS */
+        .alert-card { background: #451a03; border: 2px solid #ea580c; padding: 20px; border-radius: 12px; margin-bottom: 20px; animation: slideDown 0.3s; display: none; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.2); }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .alert-title { color: #fbbf24; margin: 0 0 10px 0; font-size: 1.1rem; font-weight: 800; display:flex; align-items:center; gap:8px; }
+        .alert-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-recover { background: #ea580c; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; flex: 1; cursor: pointer; }
+        .btn-discard { background: transparent; border: 2px solid #7f1d1d; color: #fca5a5; padding: 12px; border-radius: 8px; font-weight: bold; flex: 1; cursor: pointer; }
+
+        /* GITHUB CARD */
+        .card-github { background: var(--github-bg); border: 1px solid var(--github-blue); margin-top: 30px; }
+        .card-github h3 { color: #60a5fa; margin-bottom: 10px; }
+        .card-github label { color: #bfdbfe; }
+        .card-github input { background: #1e3a8a; border-color: #3b82f6; color: white; }
+        .btn-github { background: var(--github-blue); color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        /* FAB - BOTTOM BAR */
+        .fab-container { position: fixed; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--fab-bg); border-top: 1px solid var(--primary); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); height: 75px; }
+        .fab-btn { background: transparent; border: none; color: #888; padding: 5px 0; font-size: 0.65rem; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; height: 100%; justify-content: center; }
+        .fab-btn.action-download { background: var(--accent); color: black; font-weight: 800; border-left: 1px solid #000; }
+        .fab-icon { font-size: 1.3rem; margin-bottom: 2px; }
+
+        /* GRID PRODUCTOS */
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; margin-top: 15px; min-height: 50px; }
+        .prod-card { background: #222; border: 1px solid #333; border-radius: 8px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.2s; }
+        .prod-card:active { transform: scale(0.98); }
+        .prod-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #333; }
+        .prod-info { padding: 8px; }
+        .prod-name { font-weight: bold; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; margin-bottom: 2px; }
+        .prod-price { color: var(--accent); font-size: 0.9rem; font-weight: bold; }
+        .prod-cat { font-size: 0.65rem; color: #666; text-transform: uppercase; }
+        .badge-stock { position: absolute; top: 2px; right: 2px; background: rgba(220, 38, 38, 0.9); color: white; font-size: 0.55rem; padding: 2px 4px; border-radius: 4px; font-weight: bold; }
+        
+        /* PROMOS */
+        .promo-item { background: #2a1b05; border: 1px solid var(--accent); padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .promo-active { border-left: 4px solid var(--success); }
+        .promo-inactive { border-left: 4px solid var(--text-light); opacity: 0.6; }
+
+        /* MODAL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-overlay.open { display: flex; }
+        .modal-content { background: var(--card-bg); width: 95%; max-width: 500px; height: 90vh; border-radius: 15px; border: 1px solid var(--primary); display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.3s; }
+        .modal-header { padding: 15px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; background: #111; }
+        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+
+        /* Pequeño Modal para Promos */
+        .modal-sm { height: auto !important; max-height: 85vh; }
+
+        .upload-zone { border: 2px dashed #444; padding: 20px; text-align: center; border-radius: 10px; background: rgba(255,255,255,0.02); cursor: pointer; }
+        .opt-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .opt-card { background: #222; padding: 5px; border-radius: 8px; border: 1px solid #444; }
+        .opt-img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 5px; margin-bottom: 5px; }
+        
+        .cat-chip { background: #333; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid #444; margin-bottom: 8px; }
+        .cat-arrows { display: flex; gap: 8px; margin-left: 10px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    <div id="toast">💾 Guardado con éxito</div>
+
+    <!-- LOGIN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <div class="login-avatar">🔥</div>
+            <h2 style="color:white; margin-bottom:5px; font-family: 'Inter', sans-serif; font-weight:800;">LA ALHAMBRA</h2>
+            <p style="color:#888; font-size:0.8rem; margin-bottom:20px;">Panel de Control v15</p>
+            <input type="password" id="login-pass" class="login-input" placeholder="****" inputmode="numeric">
+            <button class="btn-login" onclick="checkLogin()">INGRESAR</button>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="mobile-header">
+        <div class="nav-scroller">
+            <div class="nav-pill active" onclick="switchPanel(0)">🏠 Inicio</div>
+            <div class="nav-pill" onclick="switchPanel(1)">⚙️ Config</div>
+            <div class="nav-pill" onclick="switchPanel(2)">🍔 Menú</div>
+            <div class="nav-pill" onclick="switchPanel(3)">📸 Fotos</div>
+        </div>
+    </div>
+
+    <main id="main-editor">
+        <!-- PANEL 0: DASHBOARD -->
+        <div id="panel-0" class="panel active">
+            <h1>Bienvenido 👋</h1>
+            
+            <!-- ALERTA DE BORRADOR -->
+            <div id="draft-alert" class="alert-card">
+                <div class="alert-title">⚠️ Cambios sin guardar</div>
+                <p style="color: #ddd; font-size: 0.9rem; margin: 0; line-height: 1.4;">
+                    Tienes un borrador guardado. ¿Quieres restaurarlo?
+                </p>
+                <div class="alert-btns">
+                    <button class="btn-recover" onclick="recoverDraft()">Recuperar</button>
+                    <button class="btn-discard" onclick="discardDraft()">Descartar</button>
+                </div>
+            </div>
+
+            <div class="card" style="background: linear-gradient(to right, #1c1917, #0f0202);">
+                <h3>📊 Estado Actual</h3>
+                <div style="display: flex; gap: 10px; text-align: center; margin-top: 15px;">
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 8px; border:1px solid #333;">
+                        <span id="stat-prods" style="font-size: 2rem; font-weight: 800; color: var(--primary); display: block;">0</span>
+                        <span style="font-size: 0.65rem; color: #aaa; letter-spacing: 1px;">PRODUCTOS</span>
+                    </div>
+                    <div style="flex: 1; background: #222; padding: 15px; border-radius: 8px; border:1px solid #333;">
+                        <span id="stat-promos" style="font-size: 2rem; font-weight: 800; color: var(--accent); display: block;">0</span>
+                        <span style="font-size: 0.65rem; color: #aaa; letter-spacing: 1px;">PROMOS ACTIVAS</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🛠️ Zona de Peligro</h3>
+                <button class="btn-outline" style="background:#450a0a; color:white; border-color:#dc2626; font-weight:bold; padding:15px;" onclick="resetDefault()">⚠️ REINICIAR (POR DEFECTO)</button>
+            </div>
+        </div>
+
+        <!-- PANEL 1: CONFIGURACIÓN -->
+        <div id="panel-1" class="panel">
+            <h1>Configuración</h1>
+            
+            <div class="card">
+                <label>Nombre del Negocio</label>
+                <input type="text" id="cfg-name" oninput="saveToDraft(false)">
+                <label>Subtítulo (Ej: Lomos & Pizzas)</label>
+                <input type="text" id="cfg-subtitle" oninput="saveToDraft(false)">
+                
+                <label>Banner Principal (URL)</label>
+                <input type="text" id="cfg-banner" oninput="updateBannerPreview(this.value)">
+                <!-- VISTA PREVIA DEL BANNER -->
+                <img id="preview-banner" src="" onerror="this.style.display='none'" style="width:100%; height:80px; object-fit:cover; border-radius:6px; display:none; margin-top:5px; border:1px solid #333;">
+                
+                <div style="border-top:1px solid #333; margin: 15px 0; padding-top:15px;">
+                    <h3 style="color:white; font-size:0.9rem;">📞 Contacto</h3>
+                    <label>WhatsApp (Sin 0 ni 15)</label>
+                    <input type="tel" id="cfg-whatsapp" placeholder="385..." oninput="saveToDraft(false)">
+                    
+                    <label>Teléfono para Llamadas</label>
+                    <input type="tel" id="cfg-phone" placeholder="385..." oninput="saveToDraft(false)">
+                    
+                    <label>Link Ubicación (Google Maps)</label>
+                    <input type="text" id="cfg-location" oninput="saveToDraft(false)">
+                    
+                    <label>Mensaje de Agradecimiento</label>
+                    <input type="text" id="cfg-message" oninput="saveToDraft(false)">
+                </div>
+
+                <div style="background: #2a1b05; padding: 10px; border-radius: 8px; border:1px solid var(--accent); display:flex; align-items:center; gap:10px;">
+                    <input type="checkbox" id="cfg-fritas" style="width:20px; height:20px; margin:0; accent-color:var(--accent);" onchange="saveToDraft(false)">
+                    <label style="margin:0; color:var(--accent);">CARTEL "SALE CON FRITAS"</label>
+                </div>
+
+                <div style="margin-top:15px;">
+                    <label>Texto Pie de Página</label>
+                    <input type="text" id="cfg-footer" oninput="saveToDraft(false)">
+                </div>
+            </div>
+
+            <!-- TARJETA GITHUB API -->
+            <div class="card card-github">
+                <h3>☁️ GitHub API (Para Fotos)</h3>
+                <label>Usuario</label>
+                <input type="text" id="gh-user" placeholder="Ej: alhambraUser">
+                <label>Repositorio</label>
+                <input type="text" id="gh-repo" placeholder="Ej: web-alhambra">
+                <label>Token (Classic)</label>
+                <input type="password" id="gh-token" placeholder="ghp_...">
+                <label>Carpeta (Opcional)</label>
+                <input type="text" id="gh-folder" placeholder="img">
+                <button class="btn-github" onclick="saveGithubConfig()">💾 Guardar API</button>
+            </div>
+        </div>
+
+        <!-- PANEL 2: MENÚ -->
+        <div id="panel-2" class="panel">
+            <h1>Gestión Menú</h1>
+            
+            <!-- PROMOCIONES -->
+            <div class="card" style="border: 1px solid var(--accent);">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0;">🔥 Promociones</h3>
+                    <button class="btn-success" style="width:auto; padding:5px 10px; font-size:0.7rem;" onclick="openPromoModal()">+ CREAR</button>
+                </div>
+                <div id="promo-list" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- CATEGORÍAS -->
+            <div class="card">
+                <h3>📂 Categorías (Orden)</h3>
+                <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                    <input type="text" id="new-cat-name" placeholder="Nueva..." style="margin:0;">
+                    <button class="btn-primary" style="width: auto; padding: 0 15px; margin:0;" onclick="addCategory()">+</button>
+                </div>
+                <div id="cat-list" style="display: flex; flex-direction: column; gap: 5px;"></div>
+            </div>
+
+            <!-- PRODUCTOS -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-top: 1px solid #333; padding-top: 20px;">
+                <h3 style="margin:0; color:white;">PRODUCTOS</h3>
+                <button class="btn-success" style="width: auto; padding: 6px 12px; font-size: 0.8rem;" onclick="openProdModal()">+ NUEVO</button>
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <select id="filter-cat" onchange="renderProducts()" style="background: #111; margin:0;">
+                    <option value="all">Ver Todo</option>
+                </select>
+            </div>
+            <div id="prod-grid" class="prod-grid"></div>
+        </div>
+
+        <!-- PANEL 3: OPTIMIZADOR + GITHUB -->
+        <div id="panel-3" class="panel">
+            <h1>Fotos & Cloud</h1>
+            <div class="card">
+                <p style="font-size: 0.8rem; color: #aaa; margin-bottom:15px;">Convierte fotos a WebP y súbelas a GitHub.</p>
+                <div class="upload-zone" onclick="document.getElementById('imgInput').click()">
+                    📸 SELECCIONAR FOTOS
+                </div>
+                <input type="file" id="imgInput" multiple accept="image/*" style="display:none" onchange="processImages(this)">
+                <div id="opt-results" class="opt-grid"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BOTTOM BAR -->
+    <div class="fab-container">
+        <!-- 1. BORRADOR (Guardar) -->
+        <button class="fab-btn" onclick="saveToDraft(true)">
+            <span class="fab-icon">💾</span> 
+            <span style="font-size:0.6rem">Guardar</span>
+        </button>
+        <!-- 2. RECARGAR (RESTORE FROM DRAFT) -->
+        <button class="fab-btn" onclick="recoverDraft()">
+            <span class="fab-icon">🔄</span> 
+            <span style="font-size:0.6rem">Recargar</span>
+        </button>
+        <!-- 3. BACKUP (Descargar JSON) -->
+        <button class="fab-btn" onclick="exportBackup()">
+            <span class="fab-icon">📤</span> 
+            <span style="font-size:0.6rem">Backup</span>
+        </button>
+        <!-- 4. RESTAURAR (Cargar JSON) -->
+        <button class="fab-btn" onclick="document.getElementById('importFile').click()">
+            <span class="fab-icon">📥</span> 
+            <span style="font-size:0.6rem">Restaurar</span>
+        </button>
+        <!-- 5. HTML (Dorado) -->
+        <button class="fab-btn action-download" onclick="downloadSite()">
+            <span class="fab-icon">📦</span> 
+            <span style="font-size:0.6rem">HTML</span>
+        </button>
+    </div>
+
+    <!-- INPUT OCULTO PARA RESTAURAR -->
+    <input type="file" id="importFile" style="display:none" onchange="importData(this)">
+
+    <!-- INPUT OCULTO PARA SUBIDA RÁPIDA (PRODUCTO) -->
+    <input type="file" id="modal-img-upload" accept="image/*" style="display:none" onchange="uploadFromModal(this)">
+    
+    <!-- INPUT OCULTO PARA SUBIDA RÁPIDA (PROMO) -->
+    <input type="file" id="modal-promo-upload" accept="image/*" style="display:none" onchange="uploadPromoFromModal(this)">
+
+    <!-- MODAL EDICIÓN PRODUCTO -->
+    <div id="prod-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:white; margin:0;">Editar Producto</h3>
+                <button onclick="closeProdModal()" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="p-id">
+                <label>Nombre</label><input type="text" id="p-name">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div><label>Precio ($)</label><input type="text" id="p-price" placeholder="8.000" onblur="formatCurrency(this)"></div>
+                    <div><label>Categoría</label><select id="p-cat"></select></div>
+                </div>
+                <label>Descripción</label><textarea id="p-desc" rows="3"></textarea>
+                <label>Imagen</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="p-img" placeholder="https://..." style="margin:0; flex:1;">
+                    <button class="btn-primary" style="width:auto; margin:0; font-size:0.75rem;" onclick="document.getElementById('modal-img-upload').click()">☁️ Subir</button>
+                    <button class="btn-outline" style="width:auto; margin:0;" onclick="pasteImage()">📋</button>
+                </div>
+                <div style="background: #2a1212; padding: 10px; border-radius: 8px; margin-top: 15px; display: flex; align-items: center; gap: 10px; border:1px solid #7f1d1d;">
+                    <input type="checkbox" id="p-nostock" style="width: 20px; height: 20px; margin: 0; accent-color: var(--danger);">
+                    <label style="margin: 0; color: #fca5a5; font-weight:bold;">MARCAR SIN STOCK</label>
+                </div>
+                <button class="btn-success" style="margin-top: 20px;" onclick="saveProduct()">GUARDAR</button>
+                <button class="btn-outline" style="margin-top: 10px; color: var(--danger); border-color: var(--danger);" onclick="deleteProduct()">ELIMINAR</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROMOS (ACTUALIZADO) -->
+    <div id="promo-modal" class="modal-overlay">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 style="color:white; margin:0;">Editar Promo</h3>
+                <button onclick="closePromoModal()" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="pr-id">
+                
+                <label>Título (Ej: 2x1 Lomos)</label>
+                <input type="text" id="pr-title">
+                
+                <label>Descripción</label>
+                <input type="text" id="pr-desc">
+                
+                <label>Precio</label>
+                <input type="text" id="pr-price" onblur="formatCurrency(this)">
+
+                <!-- NUEVO CAMPO DE IMAGEN -->
+                <label>Imagen Promo (URL)</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="pr-img" placeholder="https://..." style="margin:0; flex:1;">
+                    <!-- Botón Subir -->
+                    <button class="btn-primary" style="width:auto; margin:0; font-size:0.75rem;" onclick="document.getElementById('modal-promo-upload').click()">☁️</button>
+                    <!-- Botón Pegar -->
+                    <button class="btn-outline" style="width:auto; margin:0;" onclick="pastePromoImage()">📋</button>
+                </div>
+
+                <button class="btn-success" style="margin-top: 15px;" onclick="savePromo()">GUARDAR PROMO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MASTER TEMPLATE (WEB FINAL) -->
+    <textarea id="master-template" style="display:none;">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"> 
+<title>Sandwichería La Alhambra</title>
+<!-- SEO TAGS -->
+<meta property="og:title" content="${db.config.name}">
+<meta property="og:description" content="${db.config.subtitle}">
+<meta property="og:image" content="${db.config.banner}">
+<meta property="og:type" content="website">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{colors:{'brand-black':'#0a0a0a','brand-orange':'#f97316','brand-gold':'#fbbf24','card-dark':'#171717'},fontFamily:{'header':['"Oswald"','sans-serif'],'body':['"Montserrat"','sans-serif']},boxShadow:{'neon':'0 0 10px rgba(249, 115, 22, 0.5)'}}}}</script>
+<style>
+    body { background-color: #050505; background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 30px 30px; color: #e5e5e5; }
+    .section-header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; position: relative; }
+    .section-line { height: 1px; flex-grow: 1; background: linear-gradient(90deg, transparent, #f97316, transparent); opacity: 0.5; }
+    .section-badge { background-color: #0a0a0a; border: 2px solid #f97316; color: #fff; padding: 0.5rem 2rem; border-radius: 9999px; font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); z-index: 10; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease; }
+    .nav-glass { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(249, 115, 22, 0.2); }
+    .menu-card { background-color: #171717; border: 1px solid #333; border-radius: 0.75rem; padding: 1rem; transition: all 0.3s ease; cursor: pointer; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+    .menu-card:hover { border-color: #f97316; background-color: #202020; transform: translateX(5px); }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(4px); padding: 1rem; }
+    .modal-content { background: #171717; border: 1px solid #f97316; border-radius: 1rem; width: 100%; max-width: 550px; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,0.8); animation: fadeIn 0.3s ease; display:flex; flex-direction:column; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    .no-stock-card { opacity: 0.6; filter: grayscale(1); pointer-events:none; position:relative; }
+    .no-stock-card::after { content: "SIN STOCK"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); border: 2px solid #dc2626; color: #dc2626; font-weight: bold; font-size: 1.5rem; padding: 5px 10px; border-radius: 8px; z-index: 20; background: rgba(0,0,0,0.8); }
+    .text-glow { text-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+    .blur-active { filter: blur(5px); pointer-events: none; }
+    .no-scroll { overflow: hidden; }
+    .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s ease; }
+    .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    
+    .fritas-banner { background: linear-gradient(90deg, #f97316, #fbbf24, #f97316); background-size: 200% 200%; color: black; text-align: center; font-family: 'Oswald', sans-serif; font-weight: bold; padding: 8px; text-transform: uppercase; animation: shimmer 2s infinite linear; box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); border-bottom: 2px solid #000; }
+    @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+    .promo-card { border: 2px solid #fbbf24; background: linear-gradient(135deg, #451a03, #171717); position: relative; }
+    .promo-badge { position: absolute; top: -10px; left: 10px; background: #fbbf24; color: black; font-weight: bold; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-family: 'Oswald'; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+</style>
+</head>
+<body class="font-body antialiased">
+    <script type="application/json" id="db-data">DB_PLACEHOLDER</script>
+    <div id="main-content"></div>
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)"><div class="modal-content relative"><button onclick="closeModal(null, true)" class="absolute top-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center z-20 hover:bg-brand-orange text-xl">&times;</button><div class="h-80 w-full bg-gray-900 relative"><img id="modal-img" src="" class="w-full h-full object-cover cursor-zoom-in" alt="Detalle" onclick="openLightbox()"><div class="absolute inset-0 bg-gradient-to-t from-[#171717] to-transparent pointer-events-none"></div></div><div class="p-8 pt-4"><h3 id="modal-title" class="text-3xl font-header font-bold text-white mb-2 uppercase tracking-wide"></h3><p id="modal-desc" class="text-gray-300 text-base mb-8 leading-relaxed"></p><div class="flex justify-between items-end border-t border-gray-800 pt-6"><span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Precio</span><span id="modal-price" class="text-4xl font-header font-bold text-brand-orange text-glow"></span></div></div></div></div>
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src=""></div>
+    <script>
+        const db = JSON.parse(document.getElementById('db-data').textContent);
+        const container = document.getElementById('main-content');
+        
+        let html = `<header class="sticky top-0 z-40 nav-glass"><div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"><div class="text-xl font-header font-bold text-brand-orange tracking-widest uppercase">${db.config.name}</div><div><a href="#menu" class="text-sm font-bold text-white hover:text-brand-orange transition uppercase mr-4">Menú</a><a href="#contacto" class="text-sm font-bold text-white hover:text-brand-orange transition uppercase">Contacto</a></div></div></header>`;
+        
+        html += `<section class="relative w-full h-72 sm:h-96 bg-black overflow-hidden flex items-end justify-center pb-8"><div class="absolute inset-0 z-0"><img src="${db.config.banner}" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div></div><div class="relative z-10 text-center px-4"><h1 class="text-4xl sm:text-6xl font-header font-bold text-white drop-shadow-lg mb-2 text-glow uppercase">${db.config.name}</h1><p class="text-brand-orange text-lg sm:text-xl font-medium tracking-wide uppercase bg-black/50 px-4 py-1 rounded-full inline-block backdrop-blur-sm">${db.config.subtitle}</p></div></section>`;
+        
+        if(db.config.showFritas) html += `<div class="fritas-banner">¡TODO SALE CON FRITAS! 🍟</div>`;
+        
+        html += `<section id="menu" class="py-12 max-w-2xl mx-auto px-4">`;
+        
+        if(db.promos && db.promos.length > 0) {
+            const activePromos = db.promos.filter(p => p.active);
+            if(activePromos.length > 0) {
+                html += `<div class="mb-12"><div class="section-header-container"><div class="section-line"></div><div class="section-badge" style="border-color:#fbbf24; color:#fbbf24;"><span>🔥 PROMOCIONES</span></div><div class="section-line"></div></div>`;
+                activePromos.forEach(p => {
+                    html += `<div class="menu-card promo-card" onclick="openModal('${p.title}', '${p.price}', '${p.desc}', '${p.img || ''}')"><div class="promo-badge">OFERTA</div><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.title}</h3><p class="text-xs text-gray-300">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
+                });
+                html += `</div>`;
+            }
+        }
+
+        db.categories.forEach(cat => {
+            const products = db.products.filter(p => p.category === cat);
+            if(products.length > 0) {
+                html += `<div class="mb-12"><div class="section-header-container"><div class="section-line"></div><div class="section-badge"><span>${cat}</span></div><div class="section-line"></div></div>`;
+                products.forEach(p => {
+                    const img = p.img || '';
+                    const stockClass = p.noStock ? 'no-stock-card' : '';
+                    html += `<div class="menu-card ${stockClass}" onclick="openModal('${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.desc.replace(/'/g, "\\'")}', '${img}')"><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.name}</h3><p class="text-xs text-gray-400">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
+                });
+                html += `</div>`;
+            }
+        });
+        html += `</section>`;
+        
+        let waLink = db.config.whatsapp.replace(/\D/g, '');
+        if(!waLink.startsWith('549')) waLink = '549' + waLink;
+        
+        html += `<section id="contacto" class="bg-[#111] border-t border-gray-800 py-10 px-4 text-center"><h2 class="text-3xl font-header font-bold text-brand-orange mb-4">HAZ TU PEDIDO</h2>`;
+        if(db.config.message) html += `<p class="text-gray-400 text-sm mb-6 max-w-lg mx-auto italic">"${db.config.message}"</p>`;
+        html += `<div class="flex flex-wrap justify-center gap-4"><a href="https://wa.me/${waLink}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">WhatsApp</a>`;
+        if(db.config.phone) html += `<a href="tel:${db.config.phone}" class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Llamar</a>`;
+        if(db.config.location) html += `<a href="${db.config.location}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Ubicación</a>`;
+        html += `</div><p class="mt-8 text-gray-500 text-xs">${db.config.footer}</p></section>`;
+        container.innerHTML = html;
+
+        function openModal(title, price, desc, img) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-price').innerText = price; document.getElementById('modal-desc').innerText = desc; const imgElem = document.getElementById('modal-img'); if (img) { imgElem.src = img; imgElem.style.display = 'block'; } else { imgElem.style.display = 'none'; } document.getElementById('modal-overlay').style.display = 'flex'; document.body.classList.add('no-scroll'); }
+        function closeModal(event, force) { if (force || event.target.id === 'modal-overlay') { document.getElementById('modal-overlay').style.display = 'none'; document.body.classList.remove('no-scroll'); } }
+        function openLightbox() { const src = document.getElementById('modal-img').src; if(!src) return; document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
+        function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+    </script>
+</body>
+</html>
+    </textarea>
+
+    <!-- SCRIPT DEL EDITOR -->
+    <script>
+        // CONFIGURACIÓN POR DEFECTO
+        const defaultDB = {
+            config: { 
+                name: "La Alhambra", 
+                subtitle: "Lomos, Milanesas y Hamburguesas", 
+                whatsapp: "", phone: "", 
+                banner: "https://raw.githubusercontent.com/Alhambrabm/Alhambra/refs/heads/main/Banner.webp", 
+                footer: "© 2025 Sandwichería La Alhambra", 
+                message: "¡Gracias por elegirnos!", 
+                location: "", showFritas: true
+            },
+            promos: [],
+            categories: ["Lomitos", "Milanesas", "Hamburguesas", "Papas Fritas", "Bebidas"],
+            products: [
+                { id: 101, name: "Lomito Simple", category: "Lomitos", price: "$8.000", desc: "Bife de lomo, tomate, lechuga y mayonesa casera.", img: "https://placehold.co/400x300/f97316/ffffff?text=Lomito", noStock: false },
+                { id: 102, name: "Lomito Completo", category: "Lomitos", price: "$8.500", desc: "Jamón, queso, huevo frito y vegetales.", img: "https://placehold.co/400x300/ea580c/ffffff?text=Lomito+Completo", noStock: false },
+                { id: 201, name: "Mila Simple", category: "Milanesas", price: "$7.000", desc: "Ternera, lechuga, tomate.", img: "https://placehold.co/400x300/f97316/ffffff?text=Mila", noStock: false },
+                { id: 202, name: "Mila Completa", category: "Milanesas", price: "$7.500", desc: "Con huevo, jamón y queso.", img: "https://placehold.co/400x300/ea580c/ffffff?text=Mila+Completa", noStock: false },
+                { id: 301, name: "Hamburguesa Común", category: "Hamburguesas", price: "$5.000", desc: "Carne, lechuga, tomate.", img: "https://raw.githubusercontent.com/Alhambrabm/Alhambra/refs/heads/main/images.jpeg", noStock: false },
+                { id: 302, name: "Hamburguesa Completa", category: "Hamburguesas", price: "$5.500", desc: "Con Jamón, queso y huevo.", img: "https://placehold.co/400x300/ea580c/ffffff?text=Hamb+Completa", noStock: false }
+            ]
+        };
+
+        // Variable global
+        let db = JSON.parse(JSON.stringify(defaultDB));
+
+        // SWIPE LOGIC
+        let touchStartX = 0; let touchEndX = 0; let currentPanel = 0;
+        const mainContent = document.getElementById('main-editor');
+        mainContent.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+        mainContent.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 60) { let next = currentPanel + 1; if(next <= 3) switchPanel(next); } if (touchEndX > touchStartX + 60) { let prev = currentPanel - 1; if(prev >= 0) switchPanel(prev); } }, {passive: true});
+
+        function checkLogin() {
+            const p = document.getElementById('login-pass').value;
+            // Simple hash check (para evitar texto plano evidente)
+            // '1234' = hash simple o solo comparación directa para uso personal
+            if(p === '1234') {
+                document.getElementById('login-screen').style.display = 'none';
+                checkDraft();
+                
+                const gh = JSON.parse(localStorage.getItem('alhambra_github') || '{}');
+                if(gh.user) {
+                    document.getElementById('gh-user').value = gh.user;
+                    document.getElementById('gh-repo').value = gh.repo;
+                    document.getElementById('gh-token').value = gh.token;
+                    document.getElementById('gh-folder').value = gh.folder;
+                }
+            } else { alert('Clave incorrecta'); }
+        }
+
+        // --- SISTEMA DE BORRADOR ---
+        function checkDraft() {
+            const saved = localStorage.getItem('alhambra_draft');
+            if(saved) document.getElementById('draft-alert').style.display = 'block';
+            db = JSON.parse(JSON.stringify(defaultDB));
+            refreshUI(); 
+        }
+
+        function recoverDraft() {
+            const saved = localStorage.getItem('alhambra_draft');
+            if(saved) {
+                try {
+                    db = JSON.parse(saved);
+                    // Integridad
+                    if(!db.config) db.config = defaultDB.config;
+                    if(!db.products) db.products = [];
+                    if(!db.categories) db.categories = [];
+                    if(!db.promos) db.promos = [];
+                    
+                    refreshUI();
+                    document.getElementById('draft-alert').style.display = 'none';
+                    showToast("Borrador Recuperado");
+                } catch(e) { alert("El borrador estaba corrupto."); }
+            }
+        }
+
+        function discardDraft() {
+            localStorage.removeItem('alhambra_draft');
+            db = JSON.parse(JSON.stringify(defaultDB));
+            refreshUI();
+            document.getElementById('draft-alert').style.display = 'none';
+        }
+
+        function resetDefault() {
+            if(confirm("¿REINICIAR AL VALOR ORIGINAL? Se perderán tus cambios.")) {
+                localStorage.removeItem('alhambra_draft');
+                db = JSON.parse(JSON.stringify(defaultDB));
+                saveToDraft(false); 
+                refreshUI();
+                showToast("Reiniciado a fábrica");
+            }
+        }
+
+        function switchPanel(idx) {
+            currentPanel = idx;
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-'+idx).classList.add('active');
+            document.querySelectorAll('.nav-pill').forEach((n, i) => {
+                if(i === idx) { n.classList.add('active'); n.scrollIntoView({behavior: "smooth", inline: "center"}); }
+                else n.classList.remove('active');
+            });
+        }
+
+        function refreshUI() {
+            document.getElementById('stat-prods').innerText = db.products ? db.products.length : 0;
+            document.getElementById('stat-promos').innerText = db.promos ? db.promos.filter(p=>p.active).length : 0;
+            
+            const cfg = db.config || defaultDB.config;
+            document.getElementById('cfg-name').value = cfg.name || "";
+            document.getElementById('cfg-subtitle').value = cfg.subtitle || "";
+            document.getElementById('cfg-whatsapp').value = cfg.whatsapp || "";
+            document.getElementById('cfg-banner').value = cfg.banner || "";
+            document.getElementById('cfg-footer').value = cfg.footer || "";
+            document.getElementById('cfg-message').value = cfg.message || "";
+            document.getElementById('cfg-location').value = cfg.location || "";
+            document.getElementById('cfg-phone').value = cfg.phone || "";
+            document.getElementById('cfg-fritas').checked = cfg.showFritas !== false;
+
+            if(cfg.banner) { updateBannerPreview(cfg.banner); }
+            
+            renderPromos(); 
+            renderCats(); 
+            renderProducts();
+        }
+
+        function updateBannerPreview(url) {
+            const img = document.getElementById('preview-banner');
+            if(url) { img.src = url; img.style.display = 'block'; }
+            else { img.style.display = 'none'; }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = "💾 " + msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function saveConfigUI() {
+            if(!db.config) db.config = {};
+            db.config.name = document.getElementById('cfg-name').value;
+            db.config.subtitle = document.getElementById('cfg-subtitle').value;
+            db.config.whatsapp = document.getElementById('cfg-whatsapp').value;
+            db.config.banner = document.getElementById('cfg-banner').value;
+            db.config.footer = document.getElementById('cfg-footer').value;
+            db.config.message = document.getElementById('cfg-message').value;
+            db.config.location = document.getElementById('cfg-location').value;
+            db.config.phone = document.getElementById('cfg-phone').value;
+            db.config.showFritas = document.getElementById('cfg-fritas').checked;
+        }
+
+        function saveToDraft(notify=true) {
+            saveConfigUI(); 
+            localStorage.setItem('alhambra_draft', JSON.stringify(db));
+            if(notify) showToast("Guardado");
+        }
+
+        // --- GITHUB ---
+        function saveGithubConfig() {
+            const config = {
+                user: document.getElementById('gh-user').value.trim(),
+                repo: document.getElementById('gh-repo').value.trim(),
+                token: document.getElementById('gh-token').value.trim(),
+                folder: document.getElementById('gh-folder').value.trim()
+            };
+            localStorage.setItem('alhambra_github', JSON.stringify(config));
+            showToast("API Actualizada");
+        }
+
+        async function uploadToGitHub(fileBlob, fileName) {
+            const gh = JSON.parse(localStorage.getItem('alhambra_github') || '{}');
+            if(!gh.user || !gh.repo || !gh.token) { alert("Falta configurar GitHub API."); return null; }
+            const folder = gh.folder ? gh.folder + '/' : '';
+            const path = `${folder}${fileName}`;
+            const url = `https://api.github.com/repos/${gh.user}/${gh.repo}/contents/${path}`;
+            const reader = new FileReader();
+            return new Promise((resolve) => {
+                reader.onloadend = async function() {
+                    const base64data = reader.result.split(',')[1];
+                    try {
+                        const response = await fetch(url, {
+                            method: 'PUT',
+                            headers: { 'Authorization': `token ${gh.token}`, 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message: `Upload ${fileName}`, content: base64data })
+                        });
+                        const data = await response.json();
+                        if(response.ok) resolve(data.content.download_url);
+                        else { alert("Error GitHub: " + data.message); resolve(null); }
+                    } catch(err) { alert("Error de red."); resolve(null); }
+                };
+                reader.readAsDataURL(fileBlob);
+            });
+        }
+
+        // --- UTILS: IMAGES & CURRENCY ---
+        function formatCurrency(input) {
+            let val = input.value.replace(/\D/g, '');
+            if(val) input.value = '$' + parseInt(val).toLocaleString('es-AR');
+        }
+
+        function processImageBlob(file) {
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image(); img.src = e.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                        const max = 800; let w = img.width; let h = img.height; 
+                        if(w > h) { if(w > max) { h *= max/w; w = max; } } else { if(h > max) { w *= max/h; h = max; } }
+                        canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(blob => resolve(blob), 'image/webp', 0.85);
+                    }
+                }; reader.readAsDataURL(file);
+            });
+        }
+
+        // --- LOGIC: PROMOS ---
+        function renderPromos() {
+            const list = document.getElementById('promo-list');
+            if(!db.promos) db.promos = [];
+            list.innerHTML = db.promos.map((p, i) => `
+                <div class="promo-item ${p.active ? 'promo-active' : 'promo-inactive'}">
+                    <div style="flex:1;">
+                        <div style="font-weight:bold; color:white;">${p.title}</div>
+                        <div style="font-size:0.75rem; color:#aaa;">${p.price}</div>
+                    </div>
+                    <button onclick="openPromoModal(${i})" style="background:none; border:none; font-size:1.1rem; cursor:pointer; margin-right:5px;">✏️</button>
+                    <button onclick="togglePromo(${i})" style="background:none; border:none; font-size:1.1rem; cursor:pointer;">${p.active ? '🟢' : '⚪'}</button>
+                    <button onclick="deletePromo(${i})" style="background:none; border:none; font-size:1.1rem; cursor:pointer; margin-left:5px;">🗑️</button>
+                </div>
+            `).join('');
+        }
+        
+        function openPromoModal(index = null) {
+            document.body.classList.add('no-scroll');
+            if(index !== null) {
+                const p = db.promos[index];
+                document.getElementById('pr-id').value = index;
+                document.getElementById('pr-title').value = p.title;
+                document.getElementById('pr-desc').value = p.desc;
+                document.getElementById('pr-price').value = p.price;
+                // Cargar imagen si existe
+                document.getElementById('pr-img').value = p.img || ''; 
+            } else {
+                document.getElementById('pr-id').value = '';
+                ['pr-title','pr-desc','pr-price', 'pr-img'].forEach(id => document.getElementById(id).value = '');
+            }
+            document.getElementById('promo-modal').classList.add('open');
+        }
+        function closePromoModal() { document.getElementById('promo-modal').classList.remove('open'); document.body.classList.remove('no-scroll'); }
+        
+        function savePromo() {
+            const idx = document.getElementById('pr-id').value;
+            const obj = {
+                title: document.getElementById('pr-title').value,
+                desc: document.getElementById('pr-desc').value,
+                price: document.getElementById('pr-price').value,
+                img: document.getElementById('pr-img').value, // Guardamos la imagen
+                active: true
+            };
+            if(idx !== '') db.promos[idx] = { ...db.promos[idx], ...obj };
+            else db.promos.push(obj);
+            closePromoModal(); saveToDraft(false); refreshUI();
+        }
+        
+        function togglePromo(i) { db.promos[i].active = !db.promos[i].active; saveToDraft(false); refreshUI(); }
+        function deletePromo(i) { if(confirm("¿Borrar?")) { db.promos.splice(i, 1); saveToDraft(false); refreshUI(); } }
+
+        function pastePromoImage() { 
+            navigator.clipboard.readText().then(text => document.getElementById('pr-img').value = text); 
+        }
+
+        async function uploadPromoFromModal(input) {
+            if(input.files && input.files[0]) {
+                // Usamos el botón visualmente más cercano para mostrar el estado
+                const btn = document.getElementById('pr-img').nextElementSibling; 
+                const originalText = btn.innerText;
+                btn.innerText = "⏳"; btn.disabled = true;
+                
+                try {
+                    const blob = await processImageBlob(input.files[0]);
+                    const fileName = `promo_${Date.now()}.webp`;
+                    const url = await uploadToGitHub(blob, fileName);
+                    if(url) {
+                        document.getElementById('pr-img').value = url;
+                        showToast("Imagen cargada");
+                    }
+                } catch(e) { console.error(e); }
+                
+                btn.innerText = originalText; btn.disabled = false;
+                input.value = ""; 
+            }
+        }
+
+        // --- LOGIC: CATS (WITH REORDER) ---
+        function renderCats() {
+            const list = document.getElementById('cat-list');
+            if(!db.categories) db.categories = [];
+            
+            list.innerHTML = db.categories.map((c, i) => `
+                <div class="cat-chip">
+                    <span style="font-weight:bold;">${c}</span>
+                    <div style="display:flex; align-items:center;">
+                        <div class="cat-arrows">
+                            ${i > 0 ? `<span onclick="moveCat(${i}, -1)" style="cursor:pointer;">⬆️</span>` : '<span style="opacity:0.2">⬆️</span>'}
+                            ${i < db.categories.length - 1 ? `<span onclick="moveCat(${i}, 1)" style="cursor:pointer;">⬇️</span>` : '<span style="opacity:0.2">⬇️</span>'}
+                        </div>
+                        <span onclick="editCategory(${i})" style="cursor:pointer; margin-left:10px;">✏️</span>
+                        <span onclick="deleteCat(${i})" style="cursor:pointer; color:#ef4444; margin-left:8px; font-weight:bold;">&times;</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            const opts = db.categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('p-cat').innerHTML = opts;
+            
+            // Fix Filter preservation
+            const filterEl = document.getElementById('filter-cat');
+            if(filterEl) {
+                const currentVal = filterEl.value;
+                filterEl.innerHTML = '<option value="all">Ver Todo</option>' + opts;
+                if(currentVal) filterEl.value = currentVal;
+            }
+        }
+        function addCategory() { 
+            const n = document.getElementById('new-cat-name').value.trim(); 
+            if(n && !db.categories.includes(n)) { 
+                db.categories.push(n); 
+                document.getElementById('new-cat-name').value=''; 
+                saveToDraft(false); refreshUI(); 
+            } 
+        }
+        function editCategory(i) {
+            const oldName = db.categories[i];
+            const newName = prompt("Renombrar categoría:", oldName);
+            if(newName && newName.trim() !== "") {
+                db.categories[i] = newName.trim();
+                db.products.forEach(p => { if(p.category === oldName) p.category = newName.trim(); });
+                saveToDraft(false); refreshUI();
+            }
+        }
+        function moveCat(idx, dir) {
+            const temp = db.categories[idx];
+            db.categories[idx] = db.categories[idx + dir];
+            db.categories[idx + dir] = temp;
+            saveToDraft(false); refreshUI();
+        }
+        function deleteCat(i) {
+            if(confirm('¿Borrar categoría? Los productos quedarán huérfanos.')) { 
+                db.categories.splice(i,1); saveToDraft(false); refreshUI(); 
+            }
+        }
+        
+        // --- LOGIC: PRODUCTS ---
+        function renderProducts() {
+            const grid = document.getElementById('prod-grid');
+            const filter = document.getElementById('filter-cat').value || 'all';
+            
+            if(!db.products) db.products = [];
+            const filtered = db.products.filter(p => filter === 'all' || p.category === filter);
+            
+            if(filtered.length === 0) {
+                grid.innerHTML = '<p style="color:#aaa; text-align:center; grid-column:1/-1;">No hay productos.</p>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="prod-card" onclick="openProdModal(${p.id})">
+                    ${p.noStock ? '<div class="badge-stock">SIN STOCK</div>' : ''}
+                    <img src="${p.img || 'https://via.placeholder.com/150/000000/FFFFFF?text=Sin+Foto'}" class="prod-img">
+                    <div class="prod-info"><div class="prod-name">${p.name}</div><div class="prod-price">${p.price}</div><div class="prod-cat">${p.category}</div></div>
+                </div>
+            `).join('');
+        }
+
+        function openProdModal(id=null) {
+            if(!db.categories || db.categories.length === 0) { alert("Primero crea una Categoría."); return; }
+            document.body.classList.add('no-scroll');
+            if(id) {
+                const p = db.products.find(x => x.id === id);
+                document.getElementById('p-id').value = p.id; 
+                document.getElementById('p-name').value = p.name; 
+                document.getElementById('p-price').value = p.price; 
+                document.getElementById('p-cat').value = p.category; 
+                document.getElementById('p-desc').value = p.desc; 
+                document.getElementById('p-img').value = p.img; 
+                document.getElementById('p-nostock').checked = p.noStock;
+            } else {
+                ['p-id','p-name','p-price','p-desc','p-img'].forEach(i => document.getElementById(i).value=''); 
+                document.getElementById('p-nostock').checked = false;
+            }
+            document.getElementById('prod-modal').classList.add('open');
+        }
+        function closeProdModal() { document.getElementById('prod-modal').classList.remove('open'); document.body.classList.remove('no-scroll'); }
+        
+        function saveProduct() {
+            saveConfigUI();
+            const id = document.getElementById('p-id').value;
+            const obj = { 
+                id: id ? parseInt(id) : Date.now(), 
+                name: document.getElementById('p-name').value, 
+                price: document.getElementById('p-price').value, 
+                category: document.getElementById('p-cat').value, 
+                desc: document.getElementById('p-desc').value, 
+                img: document.getElementById('p-img').value, 
+                noStock: document.getElementById('p-nostock').checked 
+            };
+            if(id) { const idx = db.products.findIndex(x => x.id == id); if(idx !== -1) db.products[idx] = obj; } 
+            else { db.products.push(obj); }
+            closeProdModal(); saveToDraft(false); refreshUI();
+        }
+        function deleteProduct() { 
+            const id = document.getElementById('p-id').value; 
+            if(id && confirm("¿Borrar?")) { 
+                db.products = db.products.filter(x => x.id != id); 
+                closeProdModal(); saveToDraft(false); refreshUI(); 
+            } 
+        }
+        function pasteImage() { navigator.clipboard.readText().then(text => document.getElementById('p-img').value = text); }
+        
+        // --- PROCESS IMAGES (CLOUD) ---
+        async function uploadFromModal(input) {
+            if(input.files && input.files[0]) {
+                const btn = input.parentElement.querySelector('.btn-primary');
+                const originalText = btn.innerText;
+                btn.innerText = "⏳ Subiendo..."; btn.disabled = true;
+                
+                try {
+                    const blob = await processImageBlob(input.files[0]);
+                    const fileName = `prod_${Date.now()}.webp`;
+                    const url = await uploadToGitHub(blob, fileName);
+                    if(url) {
+                        document.getElementById('p-img').value = url;
+                        showToast("Imagen cargada");
+                    }
+                } catch(e) { console.error(e); }
+                
+                btn.innerText = originalText; btn.disabled = false;
+                input.value = ""; // Reset
+            }
+        }
+
+        function processImages(input) {
+            const container = document.getElementById('opt-results'); container.innerHTML = 'Procesando...';
+            Array.from(input.files).forEach(async file => {
+                const blob = await processImageBlob(file);
+                const url = URL.createObjectURL(blob); 
+                const div = document.createElement('div');
+                div.className = 'opt-card';
+                const btnId = 'btn-' + Date.now();
+                div.innerHTML = `<img src="${url}" class="opt-img"><button id="${btnId}" class="btn-primary" style="font-size:0.7rem; width:100%; margin-top:2px;">☁️ Subir a GitHub</button>`;
+                if(container.innerHTML === 'Procesando...') container.innerHTML = ''; 
+                container.appendChild(div);
+                
+                document.getElementById(btnId).onclick = async function() {
+                    this.innerText = "Subiendo..."; this.disabled = true;
+                    const fileName = `img_${Date.now()}.webp`;
+                    const gitUrl = await uploadToGitHub(blob, fileName);
+                    if(gitUrl) {
+                        this.innerText = "¡Listo!";
+                        const inputUrl = document.createElement('input'); inputUrl.type = "text"; inputUrl.value = gitUrl; inputUrl.style.width = "100%"; inputUrl.style.marginTop = "5px"; inputUrl.style.fontSize = "0.7rem"; inputUrl.onclick = function() { this.select(); document.execCommand('copy'); showToast("Copiado"); };
+                        this.parentElement.appendChild(inputUrl);
+                    } else { this.innerText = "Error"; this.disabled = false; }
+                };
+            });
+        }
+
+        // --- EXPORT / IMPORT ---
+        function exportBackup() { 
+            saveConfigUI(); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(db)], {type: 'application/json'})); 
+            a.download = 'backup-alhambra.json'; 
+            a.click(); 
+        }
+        
+        function importData(input) { 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                try {
+                    const loaded = JSON.parse(e.target.result); 
+                    if(loaded) {
+                        db = loaded;
+                        saveToDraft(false); // Guardar backup como borrador actual
+                        refreshUI(); 
+                        showToast("Datos Restaurados");
+                    } else { alert('Archivo inválido.'); }
+                } catch(err) { alert('Error al leer JSON.'); }
+            }; 
+            reader.readAsText(input.files[0]); 
+        }
+        
+        function downloadSite() { 
+            saveConfigUI(); 
+            let html = document.getElementById('master-template').value;
+            // Inject OG Meta dynamically
+            html = html.replace('${db.config.name}', db.config.name)
+                       .replace('${db.config.subtitle}', db.config.subtitle)
+                       .replace('${db.config.banner}', db.config.banner);
+            
+            html = html.replace('DB_PLACEHOLDER', JSON.stringify(db)); 
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(new Blob([html], {type: 'text/html'})); 
+            a.download = 'index.html'; 
+            a.click(); 
+        }
+    </script>
+</body>
+</html>
