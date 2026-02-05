@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <meta name="theme-color" content="#0f0202">
-    <title>Editor La Alhambra - V19 (Delete System)</title>
+    <title>Editor La Alhambra - V20 (Carrito WhatsApp)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -66,7 +66,6 @@
         .card-github input { background: #1e3a8a; border-color: #3b82f6; color: white; }
         .btn-github { background: var(--github-blue); color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
         
-        /* HISTORIAL DE FOTOS */
         .history-container { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
         .history-item { display: flex; align-items: center; background: #222; border: 1px solid #333; padding: 8px; border-radius: 8px; gap: 10px; position: relative; }
         .history-thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; background: #000; flex-shrink: 0; cursor: zoom-in; border: 1px solid #444; }
@@ -75,7 +74,6 @@
         .history-date { font-size: 0.6rem; color: #666; }
         .btn-mini { padding: 8px 12px; font-size: 1rem; border-radius: 6px; border: 1px solid #444; background: #333; color: white; cursor: pointer; }
         
-        /* BOTÓN DE BORRAR FOTO (X ROJA) */
         .btn-delete-img { 
             background: #450a0a; border: 1px solid #dc2626; color: #fca5a5; 
             width: 30px; height: 30px; border-radius: 6px; cursor: pointer; 
@@ -136,7 +134,7 @@
         <div class="login-box">
             <div class="login-avatar">🔥</div>
             <h2 style="color:white; margin-bottom:5px; font-family: 'Inter', sans-serif; font-weight:800;">LA ALHAMBRA</h2>
-            <p style="color:#888; font-size:0.8rem; margin-bottom:20px;">Backup & Deploy V19</p>
+            <p style="color:#888; font-size:0.8rem; margin-bottom:20px;">Backup & Deploy V20</p>
             <input type="password" id="login-pass" class="login-input" placeholder="****" inputmode="numeric">
             <button class="btn-login" onclick="checkLogin()">INGRESAR</button>
         </div>
@@ -374,7 +372,7 @@
         </div>
     </div>
 
-    <!-- MASTER TEMPLATE -->
+    <!-- MASTER TEMPLATE (CARRITO WHATSAPP) -->
     <textarea id="master-template" style="display:none;">
 <!DOCTYPE html>
 <html lang="es">
@@ -396,7 +394,6 @@
     .section-header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; position: relative; }
     .section-line { height: 1px; flex-grow: 1; background: linear-gradient(90deg, transparent, #f97316, transparent); opacity: 0.5; }
     .section-badge { background-color: #0a0a0a; border: 2px solid #f97316; color: #fff; padding: 0.5rem 2rem; border-radius: 9999px; font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); z-index: 10; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease; }
-    .nav-glass { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(249, 115, 22, 0.2); }
     .menu-card { background-color: #171717; border: 1px solid #333; border-radius: 0.75rem; padding: 1rem; transition: all 0.3s ease; cursor: pointer; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
     .menu-card:hover { border-color: #f97316; background-color: #202020; transform: translateX(5px); }
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 50; backdrop-filter: blur(4px); padding: 1rem; }
@@ -412,20 +409,51 @@
     @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
     .promo-card { border: 2px solid #fbbf24; background: linear-gradient(135deg, #451a03, #171717); position: relative; }
     .promo-badge { position: absolute; top: -10px; left: 10px; background: #fbbf24; color: black; font-weight: bold; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-family: 'Oswald'; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+    
+    /* CART FLOATING BUTTON */
+    .cart-float { position: fixed; bottom: 20px; right: 20px; background: #f97316; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 5px 20px rgba(249, 115, 22, 0.5); z-index: 40; display: none; align-items: center; gap: 10px; font-family: 'Oswald'; cursor: pointer; animation: popIn 0.3s; }
+    @keyframes popIn { from{transform:scale(0);} to{transform:scale(1);} }
+    .cart-badge { background: black; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    
+    /* CART MODAL */
+    .cart-modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; }
+    .btn-remove { color: #ef4444; font-weight: bold; cursor: pointer; padding: 5px; }
+    .btn-checkout { background: #25D366; color: white; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; text-transform: uppercase; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
 </style>
 </head>
-<body class="font-body antialiased">
+<body class="font-body antialiased pb-20">
     <script type="application/json" id="db-data">DB_PLACEHOLDER</script>
     <div id="main-content"></div>
-    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)"><div class="modal-content relative"><button onclick="closeModal(null, true)" class="absolute top-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center z-20 hover:bg-brand-orange text-xl">&times;</button><div class="h-80 w-full bg-gray-900 relative"><img id="modal-img" src="" class="w-full h-full object-cover cursor-zoom-in" alt="Detalle" onclick="openLightbox()"><div class="absolute inset-0 bg-gradient-to-t from-[#171717] to-transparent pointer-events-none"></div></div><div class="p-8 pt-4"><h3 id="modal-title" class="text-3xl font-header font-bold text-white mb-2 uppercase tracking-wide"></h3><p id="modal-desc" class="text-gray-300 text-base mb-8 leading-relaxed"></p><div class="flex justify-between items-end border-t border-gray-800 pt-6"><span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Precio</span><span id="modal-price" class="text-4xl font-header font-bold text-brand-orange text-glow"></span></div></div></div></div>
+    
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)"><div class="modal-content relative"><button onclick="closeModal(null, true)" class="absolute top-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center z-20 hover:bg-brand-orange text-xl">&times;</button><div class="h-80 w-full bg-gray-900 relative"><img id="modal-img" src="" class="w-full h-full object-cover cursor-zoom-in" alt="Detalle" onclick="openLightbox()"><div class="absolute inset-0 bg-gradient-to-t from-[#171717] to-transparent pointer-events-none"></div></div><div class="p-8 pt-4"><h3 id="modal-title" class="text-3xl font-header font-bold text-white mb-2 uppercase tracking-wide"></h3><p id="modal-desc" class="text-gray-300 text-base mb-8 leading-relaxed"></p><div class="flex justify-between items-end border-t border-gray-800 pt-6"><span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Precio</span><span id="modal-price" class="text-4xl font-header font-bold text-brand-orange text-glow"></span></div><button onclick="addToCartFromModal()" class="w-full bg-brand-orange hover:bg-orange-500 text-white font-bold py-4 rounded-xl mt-6 text-lg shadow-neon transition uppercase">AGREGAR AL PEDIDO +</button></div></div></div>
+    
+    <!-- CART MODAL -->
+    <div id="cart-overlay" class="modal-overlay" onclick="if(event.target.id==='cart-overlay') document.getElementById('cart-overlay').style.display='none'">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="p-4 bg-[#111] border-b border-gray-800 flex justify-between items-center"><h3 class="text-xl font-bold text-white">TU PEDIDO</h3><button onclick="document.getElementById('cart-overlay').style.display='none'" class="text-gray-400 text-2xl">&times;</button></div>
+            <div id="cart-items" class="cart-modal-body"></div>
+            <div class="p-4 bg-[#111] border-t border-gray-800">
+                <div class="flex justify-between text-xl font-bold text-white mb-4"><span>TOTAL:</span><span id="cart-total">$0</span></div>
+                <button onclick="sendOrder()" class="btn-checkout"><span>Enviar Pedido WhatsApp</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING CART BTN -->
+    <div id="fab-cart" class="cart-float" onclick="openCart()"><span class="cart-badge" id="cart-count">0</span><span>VER PEDIDO</span><span id="cart-sum">$0</span></div>
+
     <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src=""></div>
+    
     <script>
         const db = JSON.parse(document.getElementById('db-data').textContent);
         const container = document.getElementById('main-content');
-        
-        let html = `<header class="sticky top-0 z-40 nav-glass"><div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center"><div class="text-xl font-header font-bold text-brand-orange tracking-widest uppercase">${db.config.name}</div><div><a href="#menu" class="text-sm font-bold text-white hover:text-brand-orange transition uppercase mr-4">Menú</a><a href="#contacto" class="text-sm font-bold text-white hover:text-brand-orange transition uppercase">Contacto</a></div></div></header>`;
-        
-        html += `<section class="relative w-full h-72 sm:h-96 bg-black overflow-hidden flex items-end justify-center pb-8"><div class="absolute inset-0 z-0"><img src="${db.config.banner}" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div></div><div class="relative z-10 text-center px-4"><h1 class="text-4xl sm:text-6xl font-header font-bold text-white drop-shadow-lg mb-2 text-glow uppercase">${db.config.name}</h1><p class="text-brand-orange text-lg sm:text-xl font-medium tracking-wide uppercase bg-black/50 px-4 py-1 rounded-full inline-block backdrop-blur-sm">${db.config.subtitle}</p></div></section>`;
+        let cart = [];
+        let currentProduct = {};
+
+        // RENDER SITE
+        let html = `<section class="relative w-full h-72 sm:h-96 bg-black overflow-hidden flex items-end justify-center pb-8"><div class="absolute inset-0 z-0"><img src="${db.config.banner}" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div></div><div class="relative z-10 text-center px-4"><h1 class="text-4xl sm:text-6xl font-header font-bold text-white drop-shadow-lg mb-2 text-glow uppercase">${db.config.name}</h1><p class="text-brand-orange text-lg sm:text-xl font-medium tracking-wide uppercase bg-black/50 px-4 py-1 rounded-full inline-block backdrop-blur-sm">${db.config.subtitle}</p></div></section>`;
         
         if(db.config.showFritas) html += `<div class="fritas-banner">¡TODO SALE CON FRITAS! 🍟</div>`;
         html += `<section id="menu" class="py-12 max-w-2xl mx-auto px-4">`;
@@ -454,20 +482,78 @@
         });
         html += `</section>`;
         
-        let waLink = db.config.whatsapp.replace(/\D/g, '');
-        if(!waLink.startsWith('549')) waLink = '549' + waLink;
-        html += `<section id="contacto" class="bg-[#111] border-t border-gray-800 py-10 px-4 text-center"><h2 class="text-3xl font-header font-bold text-brand-orange mb-4">HAZ TU PEDIDO</h2>`;
-        if(db.config.message) html += `<p class="text-gray-400 text-sm mb-6 max-w-lg mx-auto italic">"${db.config.message}"</p>`;
-        html += `<div class="flex flex-wrap justify-center gap-4"><a href="https://wa.me/${waLink}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">WhatsApp</a>`;
-        if(db.config.phone) html += `<a href="tel:${db.config.phone}" class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Llamar</a>`;
-        if(db.config.location) html += `<a href="${db.config.location}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Ubicación</a>`;
-        html += `</div><p class="mt-8 text-gray-500 text-xs">${db.config.footer}</p></section>`;
+        html += `<section id="contacto" class="bg-[#111] border-t border-gray-800 py-10 px-4 text-center"><h2 class="text-3xl font-header font-bold text-brand-orange mb-4">UBICACIÓN</h2>`;
+        if(db.config.location) html += `<a href="${db.config.location}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2 inline-block">Ver en Mapa</a>`;
+        html += `<p class="mt-8 text-gray-500 text-xs">${db.config.footer}</p></section>`;
         container.innerHTML = html;
 
-        function openModal(title, price, desc, img) { document.getElementById('modal-title').innerText = title; document.getElementById('modal-price').innerText = price; document.getElementById('modal-desc').innerText = desc; const imgElem = document.getElementById('modal-img'); if (img) { imgElem.src = img; imgElem.style.display = 'block'; } else { imgElem.style.display = 'none'; } document.getElementById('modal-overlay').style.display = 'flex'; document.body.classList.add('no-scroll'); }
+        // MODAL LOGIC
+        function openModal(title, price, desc, img) { 
+            currentProduct = { title, price };
+            document.getElementById('modal-title').innerText = title; 
+            document.getElementById('modal-price').innerText = price; 
+            document.getElementById('modal-desc').innerText = desc; 
+            const imgElem = document.getElementById('modal-img'); 
+            if (img) { imgElem.src = img; imgElem.style.display = 'block'; } else { imgElem.style.display = 'none'; } 
+            document.getElementById('modal-overlay').style.display = 'flex'; 
+            document.body.classList.add('no-scroll'); 
+        }
         function closeModal(event, force) { if (force || event.target.id === 'modal-overlay') { document.getElementById('modal-overlay').style.display = 'none'; document.body.classList.remove('no-scroll'); } }
         function openLightbox() { const src = document.getElementById('modal-img').src; if(!src) return; document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
         function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
+
+        // CART LOGIC
+        function addToCartFromModal() {
+            cart.push(currentProduct);
+            updateCartUI();
+            closeModal(null, true);
+        }
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+            renderCartModal();
+        }
+        function updateCartUI() {
+            const fab = document.getElementById('fab-cart');
+            if(cart.length > 0) {
+                fab.style.display = 'flex';
+                document.getElementById('cart-count').innerText = cart.length;
+                let total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/[^0-9]/g, '')), 0);
+                document.getElementById('cart-sum').innerText = '$' + total.toLocaleString('es-AR');
+            } else {
+                fab.style.display = 'none';
+                document.getElementById('cart-overlay').style.display = 'none';
+            }
+        }
+        function openCart() {
+            renderCartModal();
+            document.getElementById('cart-overlay').style.display = 'flex';
+        }
+        function renderCartModal() {
+            const list = document.getElementById('cart-items');
+            list.innerHTML = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += parseInt(item.price.replace(/[^0-9]/g, ''));
+                list.innerHTML += `<div class="cart-item"><div><div class="font-bold text-white">${item.title}</div><div class="text-sm text-brand-orange">${item.price}</div></div><div class="btn-remove" onclick="removeFromCart(${index})">Eliminar</div></div>`;
+            });
+            document.getElementById('cart-total').innerText = '$' + total.toLocaleString('es-AR');
+        }
+        function sendOrder() {
+            if(cart.length === 0) return;
+            let msg = `Hola *${db.config.name}*, quiero pedir:%0A%0A`;
+            let total = 0;
+            cart.forEach(item => {
+                msg += `▪️ ${item.title} (${item.price})%0A`;
+                total += parseInt(item.price.replace(/[^0-9]/g, ''));
+            });
+            msg += `%0A*TOTAL: $${total.toLocaleString('es-AR')}*`;
+            
+            let waLink = db.config.whatsapp.replace(/\D/g, '');
+            if(!waLink.startsWith('549')) waLink = '549' + waLink;
+            
+            window.open(`https://wa.me/${waLink}?text=${msg}`, '_blank');
+        }
     </script>
 </body>
 </html>
@@ -686,7 +772,7 @@
 
             // 5. Subir (PUT)
             const body = {
-                message: "Deploy from Editor V19",
+                message: "Deploy from Editor V20",
                 content: contentBase64,
                 sha: sha
             };
@@ -758,11 +844,6 @@
             showToast("⏳ Borrando de GitHub...");
             
             try {
-                // Extraer el path del archivo desde la URL (ej: img_123.webp)
-                // Asume formato: raw.githubusercontent.com/User/Repo/Branch/Folder/File
-                // O simplificado: usamos el nombre del archivo y la carpeta configurada
-                
-                // Estrategia: Obtener el nombre del archivo del final de la URL
                 const filename = url.split('/').pop();
                 const folder = gh.folder ? gh.folder + '/' : '';
                 const path = `${folder}${filename}`;
