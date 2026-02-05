@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <meta name="theme-color" content="#0f0202">
-    <title>Editor La Alhambra - V24 (Gestión Clave)</title>
+    <title>Editor La Alhambra - V25 (Scroll Fix)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         /* ESTILOS DEL EDITOR */
@@ -135,7 +135,6 @@
         <div class="login-box">
             <div class="login-avatar">🔥</div>
             <h2 style="color:white; margin-bottom:25px; font-family: 'Inter', sans-serif; font-weight:800;">LA ALHAMBRA</h2>
-            <!-- TEXTO ELIMINADO AQUÍ -->
             <input type="password" id="login-pass" class="login-input" placeholder="****" inputmode="numeric">
             <button class="btn-login" onclick="checkLogin()">INGRESAR</button>
         </div>
@@ -416,6 +415,7 @@
 <script>tailwind.config={theme:{extend:{colors:{'brand-black':'#0a0a0a','brand-orange':'#f97316','brand-gold':'#fbbf24','card-dark':'#171717'},fontFamily:{'header':['"Oswald"','sans-serif'],'body':['"Montserrat"','sans-serif']},boxShadow:{'neon':'0 0 10px rgba(249, 115, 22, 0.5)'}}}}</script>
 <style>
     body { background-color: #050505; background-image: radial-gradient(#1a1a1a 1px, transparent 1px); background-size: 30px 30px; color: #e5e5e5; }
+    body.no-scroll { overflow: hidden !important; }
     .section-header-container { display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; position: relative; }
     .section-line { height: 1px; flex-grow: 1; background: linear-gradient(90deg, transparent, #f97316, transparent); opacity: 0.5; }
     .section-badge { background-color: #0a0a0a; border: 2px solid #f97316; color: #fff; padding: 0.5rem 2rem; border-radius: 9999px; font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2); z-index: 10; display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease; }
@@ -427,7 +427,7 @@
     .no-stock-card { opacity: 0.6; filter: grayscale(1); pointer-events:none; position:relative; }
     .no-stock-card::after { content: "SIN STOCK"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg); border: 2px solid #dc2626; color: #dc2626; font-weight: bold; font-size: 1.5rem; padding: 5px 10px; border-radius: 8px; z-index: 20; background: rgba(0,0,0,0.8); }
     .text-glow { text-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
-    .no-scroll { overflow: hidden; }
+    
     .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: none; justify-content: center; align-items: center; animation: fadeIn 0.2s ease; }
     .lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; }
     .fritas-banner { background: linear-gradient(90deg, #f97316, #fbbf24, #f97316); background-size: 200% 200%; color: black; text-align: center; font-family: 'Oswald', sans-serif; font-weight: bold; padding: 8px; text-transform: uppercase; animation: shimmer 2s infinite linear; box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); border-bottom: 2px solid #000; }
@@ -502,9 +502,9 @@
     </div>
     
     <!-- CART MODAL -->
-    <div id="cart-overlay" class="modal-overlay" onclick="if(event.target.id==='cart-overlay') document.getElementById('cart-overlay').style.display='none'">
+    <div id="cart-overlay" class="modal-overlay" onclick="if(event.target.id==='cart-overlay') closeCart()">
         <div class="modal-content" style="max-width: 400px;">
-            <div class="p-4 bg-[#111] border-b border-gray-800 flex justify-between items-center"><h3 class="text-xl font-bold text-white">TU PEDIDO</h3><button onclick="document.getElementById('cart-overlay').style.display='none'" class="text-gray-400 text-2xl">&times;</button></div>
+            <div class="p-4 bg-[#111] border-b border-gray-800 flex justify-between items-center"><h3 class="text-xl font-bold text-white">TU PEDIDO</h3><button onclick="closeCart()" class="text-gray-400 text-2xl">&times;</button></div>
             <div id="cart-items" class="cart-modal-body"></div>
             <div class="p-4 bg-[#111] border-t border-gray-800">
                 <div class="flex justify-between text-xl font-bold text-white mb-4"><span>TOTAL:</span><span id="cart-total">$0</span></div>
@@ -662,6 +662,12 @@
         function openCart() {
             renderCartModal();
             document.getElementById('cart-overlay').style.display = 'flex';
+            document.body.classList.add('no-scroll'); // LOCK SCROLL
+        }
+        
+        function closeCart() {
+            document.getElementById('cart-overlay').style.display = 'none';
+            document.body.classList.remove('no-scroll'); // UNLOCK SCROLL
         }
 
         function renderCartModal() {
@@ -964,7 +970,7 @@
             const contentBase64 = btoa(unescape(encodeURIComponent(html)));
 
             const body = {
-                message: "Deploy from Editor V23",
+                message: "Deploy from Editor V25",
                 content: contentBase64,
                 sha: sha
             };
