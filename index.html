@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <meta name="theme-color" content="#0f0202">
-    <title>Editor La Alhambra - V20 (Carrito WhatsApp)</title>
+    <title>Editor La Alhambra - V24 (Gestión Clave)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
+        /* ESTILOS DEL EDITOR */
         :root { 
             --bg: #0a0a0a; --sidebar: #120202; --text: #ffffff; --text-light: #9ca3af;  
             --card-bg: #1c1917; --input-bg: #292524; --border-color: #44403c;
@@ -133,8 +134,8 @@
     <div id="login-screen">
         <div class="login-box">
             <div class="login-avatar">🔥</div>
-            <h2 style="color:white; margin-bottom:5px; font-family: 'Inter', sans-serif; font-weight:800;">LA ALHAMBRA</h2>
-            <p style="color:#888; font-size:0.8rem; margin-bottom:20px;">Backup & Deploy V20</p>
+            <h2 style="color:white; margin-bottom:25px; font-family: 'Inter', sans-serif; font-weight:800;">LA ALHAMBRA</h2>
+            <!-- TEXTO ELIMINADO AQUÍ -->
             <input type="password" id="login-pass" class="login-input" placeholder="****" inputmode="numeric">
             <button class="btn-login" onclick="checkLogin()">INGRESAR</button>
         </div>
@@ -188,7 +189,12 @@
 
         <!-- PANEL 1: CONFIGURACIÓN -->
         <div id="panel-1" class="panel">
-            <h1>Configuración</h1>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h1 style="margin:0;">Configuración</h1>
+                <!-- CANDADITO PARA CAMBIAR CLAVE -->
+                <button onclick="openPassModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;" title="Cambiar Contraseña">🔒</button>
+            </div>
+            
             <div class="card">
                 <label>Nombre del Negocio</label>
                 <input type="text" id="cfg-name" oninput="saveToDraft(false)">
@@ -203,7 +209,7 @@
                     <label>WhatsApp</label><input type="tel" id="cfg-whatsapp" placeholder="385..." oninput="saveToDraft(false)">
                     <label>Teléfono</label><input type="tel" id="cfg-phone" placeholder="385..." oninput="saveToDraft(false)">
                     <label>Link Ubicación</label><input type="text" id="cfg-location" oninput="saveToDraft(false)">
-                    <label>Mensaje Final</label><input type="text" id="cfg-message" oninput="saveToDraft(false)">
+                    <label>Mensaje de Agradecimiento (Despedida)</label><input type="text" id="cfg-message" oninput="saveToDraft(false)">
                 </div>
 
                 <div style="background: #2a1b05; padding: 10px; border-radius: 8px; border:1px solid var(--accent); display:flex; align-items:center; gap:10px;">
@@ -318,6 +324,25 @@
     <input type="file" id="modal-img-upload" accept="image/*" style="display:none" onchange="uploadFromModal(this)">
     <input type="file" id="modal-promo-upload" accept="image/*" style="display:none" onchange="uploadPromoFromModal(this)">
 
+    <!-- MODAL CAMBIAR CLAVE -->
+    <div id="pass-modal" class="modal-overlay">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 style="color:white; margin:0;">Cambiar Contraseña</h3>
+                <button onclick="document.getElementById('pass-modal').classList.remove('open')" style="background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Contraseña Actual</label>
+                <input type="password" id="old-pass" inputmode="numeric">
+                <label>Nueva Contraseña</label>
+                <input type="password" id="new-pass" inputmode="numeric">
+                <label>Confirmar Nueva</label>
+                <input type="password" id="confirm-pass" inputmode="numeric">
+                <button class="btn-success" style="margin-top:15px;" onclick="changePassword()">ACTUALIZAR CLAVE</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL PRODUCTO -->
     <div id="prod-modal" class="modal-overlay">
         <div class="modal-content">
@@ -372,7 +397,7 @@
         </div>
     </div>
 
-    <!-- MASTER TEMPLATE (CARRITO WHATSAPP) -->
+    <!-- MASTER TEMPLATE -->
     <textarea id="master-template" style="display:none;">
 <!DOCTYPE html>
 <html lang="es">
@@ -411,15 +436,25 @@
     .promo-badge { position: absolute; top: -10px; left: 10px; background: #fbbf24; color: black; font-weight: bold; font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; font-family: 'Oswald'; box-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
     
     /* CART FLOATING BUTTON */
-    .cart-float { position: fixed; bottom: 20px; right: 20px; background: #f97316; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 5px 20px rgba(249, 115, 22, 0.5); z-index: 40; display: none; align-items: center; gap: 10px; font-family: 'Oswald'; cursor: pointer; animation: popIn 0.3s; }
-    @keyframes popIn { from{transform:scale(0);} to{transform:scale(1);} }
-    .cart-badge { background: black; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+    .cart-float { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(10,10,10,0.9); border: 1px solid #f97316; color: white; padding: 10px 25px; border-radius: 50px; font-weight: bold; z-index: 40; display: none; align-items: center; gap: 10px; font-family: 'Oswald'; cursor: pointer; animation: popIn 0.3s; backdrop-filter: blur(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); font-size: 0.9rem; }
+    @keyframes popIn { from{transform:translate(-50%) scale(0);} to{transform:translate(-50%) scale(1);} }
+    .cart-badge { background: #f97316; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; }
     
-    /* CART MODAL */
-    .cart-modal-body { padding: 20px; max-height: 60vh; overflow-y: auto; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding: 10px 0; }
-    .btn-remove { color: #ef4444; font-weight: bold; cursor: pointer; padding: 5px; }
+    /* CART MODAL COMPACTO */
+    .cart-modal-body { padding: 15px; max-height: 60vh; overflow-y: auto; }
+    .cart-item { border-bottom: 1px solid #222; padding: 10px 0; }
+    .btn-remove { color: #ef4444; font-weight: bold; cursor: pointer; padding: 0 5px; font-size: 1.2rem; }
     .btn-checkout { background: #25D366; color: white; width: 100%; padding: 15px; border-radius: 10px; font-weight: bold; text-transform: uppercase; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+    
+    /* NOTA SUTIL EN CARRITO */
+    .cart-note-input { background: transparent; border: none; border-bottom: 1px solid #333; color: #888; width: 100%; padding: 4px 0; font-size: 0.8rem; outline: none; margin-top: 2px; }
+    .cart-note-input:focus { border-color: #f97316; color: white; }
+    .cart-note-input::placeholder { font-style: italic; color: #444; }
+
+    /* CONTROLES CANTIDAD */
+    .qty-control { display: flex; align-items: center; gap: 15px; margin-top: 15px; background: #222; padding: 5px; border-radius: 10px; width: fit-content; }
+    .qty-btn { width: 35px; height: 35px; background: #333; color: white; border-radius: 8px; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:active { background: #f97316; }
 </style>
 </head>
 <body class="font-body antialiased pb-20">
@@ -427,7 +462,44 @@
     <div id="main-content"></div>
     
     <!-- PRODUCT DETAIL MODAL -->
-    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)"><div class="modal-content relative"><button onclick="closeModal(null, true)" class="absolute top-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center z-20 hover:bg-brand-orange text-xl">&times;</button><div class="h-80 w-full bg-gray-900 relative"><img id="modal-img" src="" class="w-full h-full object-cover cursor-zoom-in" alt="Detalle" onclick="openLightbox()"><div class="absolute inset-0 bg-gradient-to-t from-[#171717] to-transparent pointer-events-none"></div></div><div class="p-8 pt-4"><h3 id="modal-title" class="text-3xl font-header font-bold text-white mb-2 uppercase tracking-wide"></h3><p id="modal-desc" class="text-gray-300 text-base mb-8 leading-relaxed"></p><div class="flex justify-between items-end border-t border-gray-800 pt-6"><span class="text-sm font-bold text-gray-500 uppercase tracking-widest">Precio</span><span id="modal-price" class="text-4xl font-header font-bold text-brand-orange text-glow"></span></div><button onclick="addToCartFromModal()" class="w-full bg-brand-orange hover:bg-orange-500 text-white font-bold py-4 rounded-xl mt-6 text-lg shadow-neon transition uppercase">AGREGAR AL PEDIDO +</button></div></div></div>
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-content relative">
+            <button onclick="closeModal(null, true)" class="absolute top-4 right-4 bg-black/60 text-white rounded-full w-10 h-10 flex items-center justify-center z-20 hover:bg-brand-orange text-xl">&times;</button>
+            <div class="h-80 w-full bg-gray-900 relative">
+                <img id="modal-img" src="" class="w-full h-full object-cover cursor-zoom-in" alt="Detalle" onclick="openLightbox()">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#171717] to-transparent pointer-events-none"></div>
+            </div>
+            <div class="p-6 pt-4">
+                <h3 id="modal-title" class="text-3xl font-header font-bold text-white mb-2 uppercase tracking-wide"></h3>
+                <p id="modal-desc" class="text-gray-300 text-sm mb-4 leading-relaxed"></p>
+                
+                <div class="flex justify-between items-center border-t border-gray-800 pt-4">
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="changeQty(-1)">-</button>
+                        <span id="modal-qty" class="text-xl font-bold w-8 text-center">1</span>
+                        <button class="qty-btn" onclick="changeQty(1)">+</button>
+                    </div>
+                    <span id="modal-price" class="text-3xl font-header font-bold text-brand-orange text-glow"></span>
+                </div>
+                <button onclick="checkDrinkAndAdd()" class="w-full bg-brand-orange hover:bg-orange-500 text-white font-bold py-4 rounded-xl mt-6 text-lg shadow-neon transition uppercase">AGREGAR AL PEDIDO</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTE ASK MODAL (Intermediate Step) -->
+    <div id="note-overlay" class="modal-overlay" onclick="if(event.target.id==='note-overlay') document.getElementById('note-overlay').style.display='none'">
+        <div class="modal-content relative" style="max-width: 350px;">
+             <!-- CLOSE BUTTON ADDED -->
+            <button onclick="document.getElementById('note-overlay').style.display='none'" class="absolute top-2 right-2 text-gray-400 hover:text-white text-2xl font-bold p-2">&times;</button>
+            
+            <div class="p-6 text-center">
+                <h3 class="text-xl font-header font-bold text-brand-orange mb-4">¿ALGUNA PREFERENCIA?</h3>
+                <p class="text-gray-400 text-sm mb-4">Escribe aquí si quieres quitar algún ingrediente, punto de cocción, etc.</p>
+                <input type="text" id="temp-note" class="w-full bg-[#222] border border-gray-700 text-white rounded-lg p-3 focus:border-brand-orange outline-none transition mb-6" placeholder="Ej: Sin huevo, con mayonesa...">
+                <button onclick="confirmAddToCart()" class="w-full bg-white text-black font-bold py-3 rounded-xl uppercase">CONFIRMAR</button>
+            </div>
+        </div>
+    </div>
     
     <!-- CART MODAL -->
     <div id="cart-overlay" class="modal-overlay" onclick="if(event.target.id==='cart-overlay') document.getElementById('cart-overlay').style.display='none'">
@@ -442,7 +514,10 @@
     </div>
 
     <!-- FLOATING CART BTN -->
-    <div id="fab-cart" class="cart-float" onclick="openCart()"><span class="cart-badge" id="cart-count">0</span><span>VER PEDIDO</span><span id="cart-sum">$0</span></div>
+    <div id="fab-cart" class="cart-float" onclick="openCart()">
+        <span class="cart-badge" id="cart-count">0</span>
+        <span>VER PEDIDO</span>
+    </div>
 
     <div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightbox-img" src=""></div>
     
@@ -451,6 +526,7 @@
         const container = document.getElementById('main-content');
         let cart = [];
         let currentProduct = {};
+        let currentQty = 1;
 
         // RENDER SITE
         let html = `<section class="relative w-full h-72 sm:h-96 bg-black overflow-hidden flex items-end justify-center pb-8"><div class="absolute inset-0 z-0"><img src="${db.config.banner}" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div></div><div class="relative z-10 text-center px-4"><h1 class="text-4xl sm:text-6xl font-header font-bold text-white drop-shadow-lg mb-2 text-glow uppercase">${db.config.name}</h1><p class="text-brand-orange text-lg sm:text-xl font-medium tracking-wide uppercase bg-black/50 px-4 py-1 rounded-full inline-block backdrop-blur-sm">${db.config.subtitle}</p></div></section>`;
@@ -463,7 +539,7 @@
             if(activePromos.length > 0) {
                 html += `<div class="mb-12"><div class="section-header-container"><div class="section-line"></div><div class="section-badge" style="border-color:#fbbf24; color:#fbbf24;"><span>🔥 PROMOCIONES</span></div><div class="section-line"></div></div>`;
                 activePromos.forEach(p => {
-                    html += `<div class="menu-card promo-card" onclick="openModal('${p.title}', '${p.price}', '${p.desc}', '${p.img || ''}')"><div class="promo-badge">OFERTA</div><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.title}</h3><p class="text-xs text-gray-300">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
+                    html += `<div class="menu-card promo-card" onclick="openModal('${p.title}', '${p.price}', '${p.desc}', '${p.img || ''}', 'Promos')"><div class="promo-badge">OFERTA</div><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.title}</h3><p class="text-xs text-gray-300">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
                 });
                 html += `</div>`;
             }
@@ -475,77 +551,164 @@
                 products.forEach(p => {
                     const img = p.img || '';
                     const stockClass = p.noStock ? 'no-stock-card' : '';
-                    html += `<div class="menu-card ${stockClass}" onclick="openModal('${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.desc.replace(/'/g, "\\'")}', '${img}')"><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.name}</h3><p class="text-xs text-gray-400">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
+                    html += `<div class="menu-card ${stockClass}" onclick="openModal('${p.name.replace(/'/g, "\\'")}', '${p.price}', '${p.desc.replace(/'/g, "\\'")}', '${img}', '${cat}')"><div class="flex-1 pr-4"><h3 class="text-lg font-bold text-white mb-1">${p.name}</h3><p class="text-xs text-gray-400">${p.desc}</p></div><div class="text-xl font-header font-bold text-brand-gold">${p.price}</div></div>`;
                 });
                 html += `</div>`;
             }
         });
         html += `</section>`;
         
-        html += `<section id="contacto" class="bg-[#111] border-t border-gray-800 py-10 px-4 text-center"><h2 class="text-3xl font-header font-bold text-brand-orange mb-4">UBICACIÓN</h2>`;
-        if(db.config.location) html += `<a href="${db.config.location}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2 inline-block">Ver en Mapa</a>`;
-        html += `<p class="mt-8 text-gray-500 text-xs">${db.config.footer}</p></section>`;
+        let waLink = db.config.whatsapp.replace(/\D/g, '');
+        if(!waLink.startsWith('549')) waLink = '549' + waLink;
+        
+        // FOOTER COMPLETO
+        html += `<section id="contacto" class="bg-[#111] border-t border-gray-800 py-12 px-4 text-center">
+            <h2 class="text-3xl font-header font-bold text-brand-orange mb-4">HAZ TU PEDIDO</h2>
+            ${db.config.message ? `<p class="text-gray-300 text-base mb-8 max-w-lg mx-auto italic">"${db.config.message}"</p>` : ''}
+            
+            <div class="flex flex-wrap justify-center gap-4 mb-8">
+                <a href="https://wa.me/${waLink}" target="_blank" class="bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">WhatsApp</a>
+                ${db.config.phone ? `<a href="tel:${db.config.phone}" class="bg-white hover:bg-gray-200 text-black font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Llamar</a>` : ''}
+                ${db.config.location ? `<a href="${db.config.location}" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center justify-center gap-2">Ubicación</a>` : ''}
+            </div>
+            
+            <p class="text-gray-500 text-xs">${db.config.footer}</p>
+        </section>`;
+        
         container.innerHTML = html;
 
         // MODAL LOGIC
-        function openModal(title, price, desc, img) { 
-            currentProduct = { title, price };
+        function openModal(title, price, desc, img, category) { 
+            currentProduct = { title, price, category };
+            currentQty = 1; // RESET QTY
+            document.getElementById('modal-qty').innerText = "1";
             document.getElementById('modal-title').innerText = title; 
-            document.getElementById('modal-price').innerText = price; 
+            updateModalTotal(); // SET INITIAL PRICE
             document.getElementById('modal-desc').innerText = desc; 
             const imgElem = document.getElementById('modal-img'); 
             if (img) { imgElem.src = img; imgElem.style.display = 'block'; } else { imgElem.style.display = 'none'; } 
             document.getElementById('modal-overlay').style.display = 'flex'; 
             document.body.classList.add('no-scroll'); 
         }
+
+        // CANTIDAD Y PRECIO TOTAL EN MODAL
+        function changeQty(diff) {
+            currentQty += diff;
+            if(currentQty < 1) currentQty = 1;
+            document.getElementById('modal-qty').innerText = currentQty;
+            updateModalTotal();
+        }
+
+        function updateModalTotal() {
+            let unitPrice = parseInt(currentProduct.price.replace(/[^0-9]/g, ''));
+            let total = unitPrice * currentQty;
+            document.getElementById('modal-price').innerText = '$' + total.toLocaleString('es-AR');
+        }
+
         function closeModal(event, force) { if (force || event.target.id === 'modal-overlay') { document.getElementById('modal-overlay').style.display = 'none'; document.body.classList.remove('no-scroll'); } }
         function openLightbox() { const src = document.getElementById('modal-img').src; if(!src) return; document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
         function closeLightbox() { document.getElementById('lightbox').style.display = 'none'; }
 
-        // CART LOGIC
-        function addToCartFromModal() {
-            cart.push(currentProduct);
-            updateCartUI();
-            closeModal(null, true);
+        // --- DRINK CHECKER & NOTE LOGIC ---
+        function checkDrinkAndAdd() {
+            const cat = currentProduct.category.toLowerCase();
+            // Palabras clave para saltar modal de nota
+            if (cat.includes('bebida') || cat.includes('gaseosa') || cat.includes('trago') || cat.includes('cerveza') || cat.includes('agua')) {
+                confirmAddToCart(true); // Es bebida, skip nota
+            } else {
+                askForNote(); // Es comida, preguntar nota
+            }
         }
+
+        function askForNote() {
+            document.getElementById('modal-overlay').style.display = 'none'; 
+            document.getElementById('temp-note').value = ''; 
+            document.getElementById('note-overlay').style.display = 'flex'; 
+            document.getElementById('temp-note').focus();
+        }
+
+        function confirmAddToCart(skipNote = false) {
+            const note = skipNote ? '' : document.getElementById('temp-note').value.trim();
+            cart.push({ ...currentProduct, note, qty: currentQty });
+            
+            document.getElementById('note-overlay').style.display = 'none'; 
+            document.getElementById('modal-overlay').style.display = 'none'; 
+            document.body.classList.remove('no-scroll');
+            updateCartUI();
+        }
+
+        // CART LOGIC
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCartUI();
             renderCartModal();
         }
+
+        function updateCartNote(index, newNote) {
+            cart[index].note = newNote;
+        }
+
         function updateCartUI() {
             const fab = document.getElementById('fab-cart');
             if(cart.length > 0) {
                 fab.style.display = 'flex';
                 document.getElementById('cart-count').innerText = cart.length;
-                let total = cart.reduce((sum, item) => sum + parseInt(item.price.replace(/[^0-9]/g, '')), 0);
-                document.getElementById('cart-sum').innerText = '$' + total.toLocaleString('es-AR');
             } else {
                 fab.style.display = 'none';
                 document.getElementById('cart-overlay').style.display = 'none';
             }
         }
+
         function openCart() {
             renderCartModal();
             document.getElementById('cart-overlay').style.display = 'flex';
         }
+
         function renderCartModal() {
             const list = document.getElementById('cart-items');
             list.innerHTML = '';
             let total = 0;
             cart.forEach((item, index) => {
-                total += parseInt(item.price.replace(/[^0-9]/g, ''));
-                list.innerHTML += `<div class="cart-item"><div><div class="font-bold text-white">${item.title}</div><div class="text-sm text-brand-orange">${item.price}</div></div><div class="btn-remove" onclick="removeFromCart(${index})">Eliminar</div></div>`;
+                let unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''));
+                let itemTotal = unitPrice * item.qty;
+                total += itemTotal;
+                
+                // COMPACT DESIGN
+                list.innerHTML += `
+                    <div class="cart-item">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-[#333] text-white px-2 py-1 rounded text-xs font-bold">${item.qty}x</span>
+                                <div class="font-bold text-white text-sm">${item.title}</div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="text-brand-orange font-bold text-sm">$${itemTotal.toLocaleString('es-AR')}</div>
+                                <div class="btn-remove" onclick="removeFromCart(${index})">&times;</div>
+                            </div>
+                        </div>
+                        <input type="text" 
+                               class="cart-note-input" 
+                               placeholder="Editar nota..." 
+                               value="${item.note || ''}" 
+                               onkeyup="updateCartNote(${index}, this.value)">
+                    </div>`;
             });
             document.getElementById('cart-total').innerText = '$' + total.toLocaleString('es-AR');
         }
+
         function sendOrder() {
             if(cart.length === 0) return;
             let msg = `Hola *${db.config.name}*, quiero pedir:%0A%0A`;
             let total = 0;
             cart.forEach(item => {
-                msg += `▪️ ${item.title} (${item.price})%0A`;
-                total += parseInt(item.price.replace(/[^0-9]/g, ''));
+                let unitPrice = parseInt(item.price.replace(/[^0-9]/g, ''));
+                let itemTotal = unitPrice * item.qty;
+                
+                msg += `▪️ *${item.qty}x* ${item.title}`;
+                if(item.note) msg += ` (Nota: ${item.note})`;
+                msg += ` - $${itemTotal.toLocaleString('es-AR')}%0A`;
+                
+                total += itemTotal;
             });
             msg += `%0A*TOTAL: $${total.toLocaleString('es-AR')}*`;
             
@@ -568,9 +731,9 @@
                 footer: "© 2025 Sandwichería La Alhambra", message: "¡Gracias por elegirnos!", location: "", showFritas: true
             },
             promos: [],
-            categories: ["Lomitos", "Milanesas", "Hamburguesas"],
+            categories: ["Lomitos", "Milanesas", "Hamburguesas", "Bebidas"],
             products: [],
-            uploadedImages: [] // AQUI SE GUARDA EL HISTORIAL
+            uploadedImages: [] 
         };
 
         let db = JSON.parse(JSON.stringify(defaultDB));
@@ -581,8 +744,14 @@
         mainContent.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
         mainContent.addEventListener('touchend', e => { touchEndX = e.changedTouches[0].screenX; if (touchEndX < touchStartX - 60) { let next = currentPanel + 1; if(next <= 3) switchPanel(next); } if (touchEndX > touchStartX + 60) { let prev = currentPanel - 1; if(prev >= 0) switchPanel(prev); } }, {passive: true});
 
+        // --- SISTEMA DE CLAVE ---
+        function getStoredPass() {
+            return localStorage.getItem('alhambra_pass') || '1234';
+        }
+
         function checkLogin() {
-            if(document.getElementById('login-pass').value === '1234') {
+            const input = document.getElementById('login-pass').value;
+            if(input === getStoredPass()) {
                 document.getElementById('login-screen').style.display = 'none';
                 checkDraft();
                 const gh = JSON.parse(localStorage.getItem('alhambra_github') || '{}');
@@ -590,6 +759,36 @@
                     ['gh-user','gh-repo','gh-token','gh-folder'].forEach(id => document.getElementById(id).value = gh[id.replace('gh-','')]);
                 }
             } else { alert('Clave incorrecta'); }
+        }
+
+        function openPassModal() {
+            document.getElementById('old-pass').value = '';
+            document.getElementById('new-pass').value = '';
+            document.getElementById('confirm-pass').value = '';
+            document.getElementById('pass-modal').classList.add('open');
+        }
+
+        function changePassword() {
+            const old = document.getElementById('old-pass').value;
+            const newP = document.getElementById('new-pass').value;
+            const conf = document.getElementById('confirm-pass').value;
+
+            if(old !== getStoredPass()) {
+                alert("La contraseña actual es incorrecta.");
+                return;
+            }
+            if(newP.length < 4) {
+                alert("La nueva contraseña es muy corta.");
+                return;
+            }
+            if(newP !== conf) {
+                alert("Las contraseñas nuevas no coinciden.");
+                return;
+            }
+
+            localStorage.setItem('alhambra_pass', newP);
+            document.getElementById('pass-modal').classList.remove('open');
+            showToast("🔑 Contraseña Actualizada");
         }
 
         // --- BACKUP & RESTORE SYSTEM ---
@@ -604,9 +803,8 @@
             if(saved) {
                 try {
                     const loaded = JSON.parse(saved);
-                    // MERGE CAREFULLY
                     db = { ...defaultDB, ...loaded };
-                    if(!db.uploadedImages) db.uploadedImages = []; // Compatibilidad hacia atrás
+                    if(!db.uploadedImages) db.uploadedImages = []; 
                     refreshUI();
                     document.getElementById('draft-alert').style.display = 'none';
                     showToast("Borrador Recuperado");
@@ -651,7 +849,7 @@
                 try {
                     const loaded = JSON.parse(e.target.result); 
                     if(loaded) {
-                        db = { ...defaultDB, ...loaded }; // Merge para asegurar estructura
+                        db = { ...defaultDB, ...loaded }; 
                         saveToDraft(false); 
                         refreshUI(); 
                         showToast("Datos Restaurados");
@@ -724,7 +922,7 @@
                         const data = await response.json();
                         if(response.ok) {
                             const dlUrl = data.content.download_url;
-                            addToHistory(dlUrl); // GUARDAR EN HISTORIAL
+                            addToHistory(dlUrl); 
                             resolve(dlUrl);
                         } else { alert("Error GitHub: " + data.message); resolve(null); }
                     } catch(err) { alert("Error red."); resolve(null); }
@@ -735,29 +933,25 @@
 
         // --- PUBLICAR SITIO (DEPLOY) ---
         async function publishSite() {
-            // CONFIRMACIÓN DE SEGURIDAD
             if(!confirm("¿Estás seguro de publicar los cambios en la web?")) return;
 
             const gh = JSON.parse(localStorage.getItem('alhambra_github') || '{}');
             if(!gh.user || !gh.repo || !gh.token) { alert("Configura GitHub API primero."); return; }
             
             showToast("⏳ Generando sitio...");
-            saveConfigUI(); // Guardar cambios pendientes
+            saveConfigUI(); 
 
-            // 1. Generar HTML Final
             let html = document.getElementById('master-template').value;
             html = html.replace('${db.config.name}', db.config.name)
                        .replace('${db.config.subtitle}', db.config.subtitle)
                        .replace('${db.config.banner}', db.config.banner);
             html = html.replace('DB_PLACEHOLDER', JSON.stringify(db));
 
-            // 2. Preparar API Request
             const path = 'index.html';
             const apiUrl = `https://api.github.com/repos/${gh.user}/${gh.repo}/contents/${path}`;
 
             showToast("⏳ Conectando GitHub...");
             
-            // 3. Obtener SHA del archivo existente (si existe)
             let sha = null;
             try {
                 const getReq = await fetch(apiUrl, { headers: { Authorization: `token ${gh.token}` } });
@@ -767,12 +961,10 @@
                 }
             } catch(e) { console.log("Archivo nuevo (sin SHA previo)"); }
 
-            // 4. Codificar contenido a Base64 (UTF-8 safe)
             const contentBase64 = btoa(unescape(encodeURIComponent(html)));
 
-            // 5. Subir (PUT)
             const body = {
-                message: "Deploy from Editor V20",
+                message: "Deploy from Editor V23",
                 content: contentBase64,
                 sha: sha
             };
@@ -799,13 +991,11 @@
             }
         }
 
-        // --- HISTORIAL & BORRADO REAL (DELETE) ---
-
+        // --- HISTORIAL & BORRADO ---
         function addToHistory(url) {
             if(!db.uploadedImages) db.uploadedImages = [];
             db.uploadedImages.unshift({ url: url, date: new Date().toLocaleString() });
-            saveToDraft(false); // Guardar historial
-            refreshUI(); // Refrescar panel fotos
+            saveToDraft(false); refreshUI(); 
         }
 
         function renderHistory() {
@@ -822,7 +1012,6 @@
                         <div class="history-date">${img.date}</div>
                     </div>
                     <button class="btn-mini" onclick="navigator.clipboard.writeText('${img.url}'); showToast('Copiado')" style="margin-right:5px;">📋</button>
-                    <!-- BOTÓN DE ELIMINAR (X ROJA) -->
                     <div class="btn-delete-img" onclick="deleteImage('${img.url}', ${index})">&times;</div>
                 </div>
             `).join('');
@@ -830,8 +1019,6 @@
 
         async function deleteImage(url, index) {
             if(!confirm("⚠️ ¿Borrar imagen permanentemente?\n\nSe eliminará de la lista Y del servidor de GitHub.")) return;
-
-            // 1. Obtener Config GitHub
             const gh = JSON.parse(localStorage.getItem('alhambra_github') || '{}');
             if(!gh.user || !gh.repo || !gh.token) { 
                 alert("No se puede borrar de GitHub sin configurar la API. Se borrará solo del historial local.");
@@ -839,59 +1026,28 @@
                 saveToDraft(false); refreshUI();
                 return;
             }
-
-            // 2. Intentar borrar de GitHub
             showToast("⏳ Borrando de GitHub...");
-            
             try {
                 const filename = url.split('/').pop();
                 const folder = gh.folder ? gh.folder + '/' : '';
                 const path = `${folder}${filename}`;
-                
                 const apiUrl = `https://api.github.com/repos/${gh.user}/${gh.repo}/contents/${path}`;
 
-                // A) Obtener SHA
                 const getReq = await fetch(apiUrl, { headers: { Authorization: `token ${gh.token}` } });
-                
                 if(getReq.ok) {
                     const data = await getReq.json();
-                    const sha = data.sha;
-                    
-                    // B) Ejecutar DELETE
                     const delReq = await fetch(apiUrl, {
                         method: 'DELETE',
-                        headers: {
-                            'Authorization': `token ${gh.token}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            message: `Delete ${filename}`,
-                            sha: sha
-                        })
+                        headers: { 'Authorization': `token ${gh.token}`, 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: `Delete ${filename}`, sha: data.sha })
                     });
-
-                    if(delReq.ok) {
-                        showToast("🗑️ Eliminado de GitHub");
-                    } else {
-                        console.error(await delReq.json());
-                        alert("No se pudo borrar de GitHub (Error API). Se borrará del historial local.");
-                    }
-                } else {
-                    console.warn("Archivo no encontrado en GitHub, borrando localmente.");
+                    if(delReq.ok) showToast("🗑️ Eliminado de GitHub");
                 }
-
-            } catch(e) {
-                console.error(e);
-                alert("Error de conexión con GitHub. Se borrará del historial local.");
-            }
-
-            // 3. Borrar de la lista local
+            } catch(e) { console.error(e); }
             db.uploadedImages.splice(index, 1);
-            saveToDraft(false);
-            refreshUI();
+            saveToDraft(false); refreshUI();
         }
         
-        // --- VISOR HISTORIAL ---
         function openHistoryLightbox(url) {
             document.getElementById('history-lightbox-img').src = url;
             document.getElementById('history-lightbox').style.display = 'flex';
@@ -899,7 +1055,6 @@
         function closeHistoryLightbox() {
             document.getElementById('history-lightbox').style.display = 'none';
         }
-
         function clearHistory() {
             if(confirm("¿Borrar SOLO el historial local? (Las fotos seguirán ocupando espacio en GitHub)")) {
                 db.uploadedImages = [];
@@ -937,16 +1092,12 @@
                 const div = document.createElement('div');
                 div.className = 'opt-card';
                 const btnId = 'btn-' + Date.now();
-                
-                // Tarjeta de previsualización con botón de quitar
                 div.innerHTML = `
                     <div style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:20px; height:20px; text-align:center; line-height:20px; cursor:pointer; font-weight:bold;" onclick="this.parentElement.remove()">×</div>
                     <img src="${url}" class="opt-img">
                     <button id="${btnId}" class="btn-primary" style="font-size:0.7rem; width:100%; margin-top:2px;">☁️ Subir</button>
                 `;
-                
                 if(container.innerHTML === 'Procesando...') container.innerHTML = ''; container.appendChild(div);
-                
                 document.getElementById(btnId).onclick = async function() {
                     this.innerText = "..."; this.disabled = true;
                     const gitUrl = await uploadToGitHub(blob, `img_${Date.now()}.webp`);
