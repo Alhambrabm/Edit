@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
     <meta name="theme-color" content="#0f0202">
-    <title>Editor La Alhambra - V26 (Preview Added)</title>
+    <title>Editor La Alhambra - V27 (Fixed Bottom)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         /* ESTILOS DEL EDITOR */
@@ -32,8 +32,9 @@
         .nav-pill { white-space: nowrap; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; color: var(--text-light); background: rgba(255,255,255,0.05); transition: 0.2s; border: 1px solid transparent; cursor: pointer; }
         .nav-pill.active { background: var(--primary); color: white; font-weight: 700; border-color: var(--accent); box-shadow: 0 0 10px rgba(234, 88, 12, 0.4); }
 
-        /* MAIN */
-        main { flex: 1; padding: 15px; overflow-y: auto; scroll-behavior: smooth; position: relative; padding-bottom: 120px; }
+        /* MAIN - AQUÍ ESTÁ EL CAMBIO PRINCIPAL (padding-bottom: 200px) */
+        main { flex: 1; padding: 15px; overflow-y: auto; scroll-behavior: smooth; position: relative; padding-bottom: 200px; }
+        
         .panel { display: none; animation: fadeIn 0.3s ease; width: 100%; }
         .panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -50,20 +51,8 @@
         .btn-success { background: var(--success); color: white; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
         .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-light); width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; }
 
-        /* PREVIEW BOX (NUEVO) */
-        .preview-box {
-            background: var(--preview-bg);
-            border: 2px dashed var(--preview-green);
-            color: var(--preview-green);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-            overflow: hidden;
-        }
+        /* PREVIEW BOX */
+        .preview-box { background: var(--preview-bg); border: 2px dashed var(--preview-green); color: var(--preview-green); padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden; }
         .preview-box:active { transform: scale(0.98); background: rgba(6, 78, 59, 0.6); }
         .preview-title { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 5px; }
 
@@ -328,7 +317,7 @@
         </button>
         <!-- BACKUP JSON -->
         <button class="fab-btn" onclick="exportBackup()">
-            <span class="fab-icon">📤</span>
+            <span class="fab-icon">📥</span>
             <span style="font-size:0.6rem">Backup</span>
         </button>
         <!-- RESTAURAR JSON -->
